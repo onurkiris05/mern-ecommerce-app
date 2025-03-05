@@ -5,9 +5,22 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import sliderItems from "../data/sliderItems";
+import { Button } from "./Button";
 
 const Container = styled.div`
+  position: relative;
   width: 100%;
+
+  &::before {
+    position: absolute;
+    content: "";
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to top, white, transparent);
+    pointer-events: none;
+    z-index: 10;
+  }
 
   .swiper-button-next,
   .swiper-button-prev {
@@ -59,18 +72,6 @@ const Description = styled.p`
   color: gray;
 `;
 
-const Button = styled.button`
-  font-size: 1.25rem;
-  padding: 0.5rem 1rem;
-  background: none;
-  cursor: pointer;
-  transition: 0.2s;
-
-  &:hover {
-    background-color: var(--clr-3);
-  }
-`;
-
 function Slider() {
   return (
     <Container>
@@ -89,7 +90,7 @@ function Slider() {
               <InfoContainer>
                 <Title>{item.title}</Title>
                 <Description>{item.description}</Description>
-                <Button>SHOP NOW</Button>
+                <Button.Primary size="1.5rem">SHOP NOW</Button.Primary>
               </InfoContainer>
             </SliderContainer>
           </SwiperSlide>
