@@ -2,6 +2,7 @@ import styled from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
 import { Badge } from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import Logo from "./Logo";
 
 const Container = styled.div``;
 
@@ -47,19 +48,6 @@ const Center = styled.div`
   justify-content: center;
 `;
 
-const LogoFirst = styled.h1`
-  font-size: 3rem;
-  font-weight: 600;
-  font-family: var(--ff-secondary);
-  color: var(--clr-3);
-`;
-
-const LogoLast = styled.span`
-  font-size: 3rem;
-  font-weight: 200;
-  color: var(--clr-5);
-`;
-
 // RIGHT CONTAINER
 const Right = styled.div`
   flex: 1;
@@ -86,8 +74,7 @@ function Navbar() {
           </SearchContainer>
         </Left>
         <Center>
-          <LogoFirst>trend</LogoFirst>
-          <LogoLast>NEST</LogoLast>
+          <Logo />
         </Center>
         <Right>
           <MenuItem>REGISTER</MenuItem>

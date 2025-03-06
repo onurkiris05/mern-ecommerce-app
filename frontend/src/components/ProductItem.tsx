@@ -13,7 +13,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(222, 219, 210, 0.2);
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -22,6 +22,7 @@ const Container = styled.div`
   & button {
     visibility: hidden;
     opacity: 0;
+    z-index: 10;
   }
 
   &:hover button {
@@ -34,7 +35,7 @@ const Container = styled.div`
     position: absolute;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.3);
-    z-index: -1;
+    z-index: 0;
   }
 
   &:hover img {
@@ -48,7 +49,7 @@ const Image = styled.img`
   height: 100%;
   object-fit: cover;
   transition: 0.5s;
-  z-index: -1;
+  z-index: 0;
 `;
 
 function ProductItem({ product }: ProductItemProps) {

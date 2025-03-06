@@ -19,6 +19,7 @@ const Title = styled.h1`
 
 const Description = styled.p`
   font-size: 1.75rem;
+  padding-inline: 1rem;
 `;
 
 const InputContainer = styled.form`
