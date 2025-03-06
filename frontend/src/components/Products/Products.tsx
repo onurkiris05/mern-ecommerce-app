@@ -1,4 +1,4 @@
-import products from "../data/productItems";
+import products from "../../data/productItems";
 import ProductItem from "./ProductItem";
 import { Col, Container, Row } from "react-bootstrap";
 

@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { Product } from "../data/productItems";
+import { Product } from "../../data/productItems";
 import OpenInFullRoundedIcon from "@mui/icons-material/OpenInFullRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
-import { Button } from "./Button";
+import { Button } from "../Button";
 
 interface ProductItemProps {
   product: Product;

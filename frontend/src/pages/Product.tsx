@@ -1,23 +1,19 @@
 import Announcement from "../components/Announcement";
-import Categories from "../components/Categories";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
-import Products from "../components/Products/Products";
-import Slider from "../components/Slider";
+import SingleProduct from "../components/Products/SingleProduct";
 
-function Home() {
+function Product() {
   return (
     <>
       <Navbar />
       <Announcement />
-      <Slider />
-      <Categories />
-      <Products />
+      <SingleProduct />
       <Newsletter />
       <Footer />
     </>
   );
 }
 
-export default Home;
+export default Product;

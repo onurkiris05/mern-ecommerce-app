@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Products from "./Products";
-import SelectForm from "./SelectForm";
-import * as SelectItems from "../data/selectItems";
+import SelectForm from "../Forms/SelectForm";
+import * as SelectItems from "../../data/selectItems";
 
 const Container = styled.div`
   padding-block: 2rem;
