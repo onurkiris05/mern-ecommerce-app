@@ -1,13 +1,19 @@
-import Home from "./pages/Home";
-import Product from "./pages/Product";
-import ProductList from "./pages/ProductList";
+import HomePage from "./pages/HomePage";
+import ProductPage from "./pages/ProductPage";
+import ProductListPage from "./pages/ProductListPage";
+import RegisterPage from "./pages/RegisterPage";
+import SignInPage from "./pages/SignInPage";
+import CartPage from "./pages/CartPage";
 
 function App() {
   return (
     <>
-      {/* <Home /> */}
-      {/* <ProductList /> */}
-      <Product />
+      {/* <HomePage /> */}
+      {/* <ProductPage /> */}
+      {/* <ProductListPage /> */}
+      {/* <RegisterPage /> */}
+      {/* <SignInPage /> */}
+      <CartPage />
     </>
   );
 }
