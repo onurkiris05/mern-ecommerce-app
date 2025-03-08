@@ -68,7 +68,7 @@ function Register() {
             <Form.Group>
               <Form.Check className="d-inline me-2" type="checkbox" />
               <Form.Text>
-                By creating an account you agree to our <a href="#">Terms & Conditions</a>
+                By creating an account you agree to our <a href="/">Terms & Conditions</a>
               </Form.Text>
             </Form.Group>
           </Row>

@@ -1,16 +1,22 @@
+import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Cart from "../components/Cart/Cart";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import Header from "../components/Header";
+
+const Container = styled.div`
+  max-width: var(--max-width);
+  margin: 0 auto;
+`;
 
 function CartPage() {
   return (
-    <>
-      <Navbar />
+    <Container>
+      <Header />
       <Announcement />
       <Cart />
       <Footer />
-    </>
+    </Container>
   );
 }
 

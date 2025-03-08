@@ -6,6 +6,7 @@ import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import sliderItems from "../data/sliderItems";
 import { Button } from "./Button";
+import { sm } from "../utils/responsive";
 
 const Container = styled.div`
   position: relative;
@@ -39,10 +40,18 @@ const SliderContainer = styled.div`
   display: flex;
   align-items: center;
   height: 100vh;
+  position: relative;
 `;
 
 const ImgContainer = styled.div`
   flex: 1;
+  height: 100%;
+
+  ${sm({
+    position: "absolute",
+    opacity: "0.5",
+    zIndex: "-1",
+  })}
 `;
 
 const Image = styled.img`
@@ -69,7 +78,6 @@ const Title = styled.h2`
 const Description = styled.p`
   margin: 1rem 0;
   font-size: 1.5rem;
-  color: gray;
 `;
 
 function Slider() {

@@ -1,19 +1,18 @@
 import styled from "styled-components";
 import { CartProductModel } from "../../data/cartItems";
 import QuantityForm from "../Forms/QuantityForm";
+import { Col, Container, Row } from "react-bootstrap";
 
 interface CartProductProps {
   product: CartProductModel;
 }
 
-const Body = styled.div`
+const Body = styled(Container)`
   display: flex;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
-const ImageWrapper = styled.div`
-  flex: 1;
-`;
+const ImageWrapper = styled.div``;
 
 const Image = styled.img`
   width: 100%;
@@ -22,8 +21,6 @@ const Image = styled.img`
 `;
 
 const DetailsWrapper = styled.div`
-  flex: 3;
-  padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -45,12 +42,12 @@ const Color = styled.div<{ color: string }>`
 `;
 
 const QuantityWrapper = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  margin-bottom: 1rem;
 `;
 
 const Price = styled.h2`
@@ -61,28 +58,30 @@ const Price = styled.h2`
 function CartProduct({ product }: CartProductProps) {
   return (
     <Body>
-      <ImageWrapper>
-        <Image src={product.imgUrl} />
-      </ImageWrapper>
-      <DetailsWrapper>
-        <Text>
-          <Span>Product: </Span>
-          {product.name}
-        </Text>
-        <Text>
-          <Span>ID: </Span>
-          {product.id}
-        </Text>
-        <Color color={product.color} />
-        <Text>
-          <Span>Size: </Span>
-          {product.size}
-        </Text>
-      </DetailsWrapper>
-      <QuantityWrapper>
-        <QuantityForm max={product.stock} size={1.5} onChange={() => {}} />
-        <Price>$ {product.price}</Price>
-      </QuantityWrapper>
+      <Row>
+        <ImageWrapper as={Col} xs={4} sm={3}>
+          <Image src={product.imgUrl} />
+        </ImageWrapper>
+        <DetailsWrapper as={Col} xs={8} sm={6} className="px-3 pt-4 pb-2 py-sm-4">
+          <Text>
+            <Span>Product: </Span>
+            {product.name}
+          </Text>
+          <Text>
+            <Span>ID: </Span>
+            {product.id}
+          </Text>
+          <Color color={product.color} />
+          <Text>
+            <Span>Size: </Span>
+            {product.size}
+          </Text>
+        </DetailsWrapper>
+        <QuantityWrapper as={Col} sm={3}>
+          <QuantityForm max={product.stock} size={1.5} onChange={() => {}} />
+          <Price>$ {product.price}</Price>
+        </QuantityWrapper>
+      </Row>
     </Body>
   );
 }

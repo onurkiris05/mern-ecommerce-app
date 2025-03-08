@@ -4,6 +4,8 @@ const baseButtonStyles = css<{ size?: string; padding?: string }>`
   font-size: ${({ size }) => size || "2rem"};
   padding: ${({ padding }) => padding || "0.5rem 1rem"};
   background: none;
+  color: var(--clr-1);
+  border-color: var(--clr-1);
   cursor: pointer;
   transition: 0.2s;
 `;

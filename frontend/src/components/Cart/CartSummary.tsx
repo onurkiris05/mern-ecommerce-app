@@ -8,7 +8,7 @@ interface CartSummaryProps {
 }
 
 const Body = styled.div`
-  padding: 2rem 0;
+  padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;

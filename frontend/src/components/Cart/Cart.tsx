@@ -4,12 +4,17 @@ import { Button } from "../Button";
 import cartItems from "../../data/cartItems";
 import CartProduct from "./CartProduct";
 import CartSummary from "./CartSummary";
+import { md } from "../../utils/responsive";
 
 const Body = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  ${md({
+    borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
+  })}
 `;
 
 const Title = styled.h2`
@@ -40,7 +45,7 @@ const Span = styled.span``;
 
 function Cart() {
   return (
-    <Body className="py-5 px-4">
+    <Body className="pt-5 px-1 px-sm-4">
       <Title>Your Bag</Title>
       <NavWrapper>
         <Button.Primary size="1rem">CONTINUE SHOPPING</Button.Primary>
@@ -56,14 +61,14 @@ function Cart() {
           CHECKOUT NOW
         </Button.Secondary>
       </NavWrapper>
-      <Container className="py-4">
+      <Container fluid className="pt-4">
         <Row>
-          <Col sm={8}>
+          <Col md={8}>
             {cartItems.map((item) => (
-              <CartProduct product={item} />
+              <CartProduct key={item.id} product={item} />
             ))}
           </Col>
-          <Col sm={4}>
+          <Col md={4}>
             <CartSummary subtotal={44.0} shipping={5.99} shippingDiscount={5.99} />
           </Col>
         </Row>

@@ -3,22 +3,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Badge } from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Logo from "./Logo";
-
-const Container = styled.div``;
-
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 1rem 2rem;
-`;
-
-// LEFT CONTAINER
-const Left = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-`;
+import { Col, Container, Row } from "react-bootstrap";
 
 const Language = styled.span`
   font-size: 1rem;
@@ -33,27 +18,9 @@ const SearchContainer = styled.div`
 `;
 
 const Input = styled.input`
+  width: 100%;
   border: none;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-// CENTER CONTAINER
-const Center = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-// RIGHT CONTAINER
-const Right = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  outline: none;
 `;
 
 const MenuItem = styled.div`
@@ -62,21 +29,29 @@ const MenuItem = styled.div`
   cursor: pointer;
 `;
 
-function Navbar() {
+function Header() {
   return (
-    <Container>
-      <Wrapper>
-        <Left>
+    <Container fluid className=" py-3">
+      <Row className="d-flex justify-content-between align-items-center">
+        <Col
+          sm={6}
+          md={4}
+          className="d-flex justify-content-center justify-content-md-start align-items-center gap-2 py-2 py-sm-0"
+        >
           <Language>EN</Language>
           <SearchContainer>
             <Input placeholder="Search" />
             <SearchIcon style={{ color: "gray", fontSize: "1.25rem" }} />
           </SearchContainer>
-        </Left>
-        <Center>
+        </Col>
+        <Col md={4} className="order-first order-md-0">
           <Logo />
-        </Center>
-        <Right>
+        </Col>
+        <Col
+          sm={6}
+          md={4}
+          className="d-flex justify-content-center justify-content-md-end py-2 py-sm-0"
+        >
           <MenuItem>REGISTER</MenuItem>
           <MenuItem>SIGN IN</MenuItem>
           <MenuItem>
@@ -84,10 +59,10 @@ function Navbar() {
               <ShoppingCartOutlinedIcon color="action" />
             </Badge>
           </MenuItem>
-        </Right>
-      </Wrapper>
+        </Col>
+      </Row>
     </Container>
   );
 }
 
-export default Navbar;
+export default Header;

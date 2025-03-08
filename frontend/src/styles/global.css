@@ -15,13 +15,15 @@
   /* Z-INDEX */
   --z-above: 10;
   --z-below: -10;
-
   --z-base: 1;
   --z-content: 50;
   --z-header: 100;
   --z-dropdown: 200;
   --z-modal: 500;
   --z-tooltip: 1000;
+
+  /* BREAKPOINTS */
+  --max-width: 1200px;
 }
 
 * {

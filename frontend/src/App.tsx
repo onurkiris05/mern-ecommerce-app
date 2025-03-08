@@ -8,12 +8,12 @@ import CartPage from "./pages/CartPage";
 function App() {
   return (
     <>
-      {/* <HomePage /> */}
+      <HomePage />
       {/* <ProductPage /> */}
       {/* <ProductListPage /> */}
       {/* <RegisterPage /> */}
       {/* <SignInPage /> */}
-      <CartPage />
+      {/* <CartPage /> */}
     </>
   );
 }
