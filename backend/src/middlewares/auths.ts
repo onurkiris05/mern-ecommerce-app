@@ -48,19 +48,19 @@ export const validateLogin: RequestHandler<unknown, unknown, LoginBody, unknown>
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return next(createHttpError(400, "All fields are required"));
+    throw createHttpError(400, "All fields are required");
   }
 
   const user = await User.findOne({ username }).select("+password");
 
   if (!user) {
-    return next(createHttpError(401, "Invalid credentials"));
+    throw createHttpError(401, "Invalid credentials");
   }
 
   const passwordMatch = await bcrypt.compare(password, user.password);
 
   if (!passwordMatch) {
-    return next(createHttpError(401, "Invalid credentials"));
+    throw createHttpError(401, "Invalid credentials");
   }
 
   req.user = user;

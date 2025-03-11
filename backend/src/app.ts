@@ -4,6 +4,7 @@ import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
 import usersRoutes from "./routes/users";
 import authsRoutes from "./routes/auths";
+import productsRoutes from "./routes/products";
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/api/users", usersRoutes);
+app.use("/api/products", productsRoutes);
 app.use("/api/auths", authsRoutes);
 
 app.use((req, res, next) => {

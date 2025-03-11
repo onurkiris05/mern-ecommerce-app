@@ -4,16 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import env from "../utils/validateEnv";
 
-interface RegisterBody {
-  username: string;
-  email: string;
-  password: string;
-}
-
-export const register: RequestHandler<unknown, unknown, RegisterBody, unknown> = async (
-  req,
-  res
-) => {
+export const register: RequestHandler = async (req, res) => {
   const { username, email, password } = req.body;
   const passwordHashed = await bcrypt.hash(password ?? "", 10);
 
