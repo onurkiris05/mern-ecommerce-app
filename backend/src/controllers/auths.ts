@@ -1,6 +1,8 @@
 import { RequestHandler } from "express";
 import User from "../models/user";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import env from "../utils/validateEnv";
 
 interface RegisterBody {
   username: string;
@@ -22,4 +24,15 @@ export const register: RequestHandler<unknown, unknown, RegisterBody, unknown> =
   });
 
   res.status(201).json(newUser);
+};
+
+export const login: RequestHandler = async (req, res) => {
+  const user = req.user.toObject();
+  delete user.password;
+
+  const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+
+  res.status(201).json({ ...user, token });
 };
