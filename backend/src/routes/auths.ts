@@ -10,6 +10,7 @@ router.post(
   handleAsync(AuthsService.validateRegister),
   handleAsync(AuthsController.register)
 );
+
 router.post("/login", handleAsync(AuthsService.validateLogin), handleAsync(AuthsController.login));
 
 export default router;

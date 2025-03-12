@@ -5,6 +5,8 @@ import createHttpError, { isHttpError } from "http-errors";
 import usersRoutes from "./routes/users";
 import authsRoutes from "./routes/auths";
 import productsRoutes from "./routes/products";
+import ordersRoutes from "./routes/orders";
+import cartsRoutes from "./routes/carts";
 
 const app = express();
 
@@ -13,6 +15,8 @@ app.use(morgan("dev"));
 
 app.use("/api/users", usersRoutes);
 app.use("/api/products", productsRoutes);
+app.use("/api/orders", ordersRoutes);
+app.use("/api/carts", cartsRoutes);
 app.use("/api/auths", authsRoutes);
 
 app.use((req, res, next) => {

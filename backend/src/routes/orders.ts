@@ -7,22 +7,33 @@ import handleAsync from "../utils/handleAsync";
 const router = express.Router();
 
 router
-  .get("/", AuthsService.verifyTokenAndAdmin, handleAsync(OrdersController.getAllOrders))
+  .route("/")
+  .get(AuthsService.verifyTokenAndAdmin, handleAsync(OrdersController.getAllOrders))
   .post(
-    "/",
     AuthsService.verifyToken,
     handleAsync(OrdersService.validateCreateOrder),
     handleAsync(OrdersController.createOrder)
   );
 
+router.get(
+  "/income",
+  AuthsService.verifyTokenAndAdmin,
+  handleAsync(OrdersController.getPrevMonthIncome)
+);
+
+router.get(
+  "/:userId",
+  AuthsService.verifyTokenAndAuthorization,
+  handleAsync(OrdersController.getOrder)
+);
+
 router
-  .get("/:userId", AuthsService.verifyTokenAndAuthorization, handleAsync(OrdersController.getOrder))
+  .route("/:id")
   .put(
-    "/:id",
     AuthsService.verifyTokenAndAdmin,
     handleAsync(OrdersService.validateUpdateOrder),
     handleAsync(OrdersController.updateOrder)
   )
-  .delete("/:id", AuthsService.verifyTokenAndAdmin, handleAsync(OrdersController.deleteOrder));
+  .delete(AuthsService.verifyTokenAndAdmin, handleAsync(OrdersController.deleteOrder));
 
 export default router;

@@ -9,12 +9,9 @@ router.get("/", AuthsService.verifyTokenAndAdmin, handleAsync(UsersController.ge
 router.get("/stats", AuthsService.verifyTokenAndAdmin, handleAsync(UsersController.getStats));
 
 router
-  .get("/:id", AuthsService.verifyTokenAndAdmin, handleAsync(UsersController.getUser))
-  .put("/:id", AuthsService.verifyTokenAndAuthorization, handleAsync(UsersController.updateUser))
-  .delete(
-    "/:id",
-    AuthsService.verifyTokenAndAuthorization,
-    handleAsync(UsersController.deleteUser)
-  );
+  .route("/:id")
+  .get(AuthsService.verifyTokenAndAdmin, handleAsync(UsersController.getUser))
+  .put(AuthsService.verifyTokenAndAuthorization, handleAsync(UsersController.updateUser))
+  .delete(AuthsService.verifyTokenAndAuthorization, handleAsync(UsersController.deleteUser));
 
 export default router;

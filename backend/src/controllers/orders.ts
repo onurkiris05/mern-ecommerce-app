@@ -3,6 +3,38 @@ import Order from "../models/order";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
 
+export const getPrevMonthIncome: RequestHandler = async (req, res, next) => {
+  try {
+    const date = new Date();
+    const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
+    const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
+
+    const income = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: previousMonth },
+        },
+      },
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+          sales: "$amount",
+        },
+      },
+      {
+        $group: {
+          _id: "$month",
+          totalIncome: { $sum: "$sales" },
+        },
+      },
+    ]);
+
+    res.status(200).json(income);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getAllOrders: RequestHandler = async (req, res) => {
   const orders = await Order.find();
 

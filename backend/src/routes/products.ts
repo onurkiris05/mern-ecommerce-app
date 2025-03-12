@@ -7,22 +7,22 @@ import handleAsync from "../utils/handleAsync";
 const router = express.Router();
 
 router
-  .get("/", AuthsService.verifyTokenAndAdmin, handleAsync(ProductsController.getAllProducts))
+  .route("/")
+  .get(AuthsService.verifyTokenAndAdmin, handleAsync(ProductsController.getAllProducts))
   .post(
-    "/",
     AuthsService.verifyTokenAndAdmin,
     handleAsync(ProductsService.validateCreateProduct),
     handleAsync(ProductsController.createProduct)
   );
 
 router
-  .get("/:id", handleAsync(ProductsController.getProduct))
+  .route("/:id")
+  .get(handleAsync(ProductsController.getProduct))
   .put(
-    "/:id",
     AuthsService.verifyTokenAndAdmin,
     handleAsync(ProductsService.validateUpdateProduct),
     handleAsync(ProductsController.updateProduct)
   )
-  .delete("/:id", AuthsService.verifyTokenAndAdmin, handleAsync(ProductsController.deleteProduct));
+  .delete(AuthsService.verifyTokenAndAdmin, handleAsync(ProductsController.deleteProduct));
 
 export default router;
