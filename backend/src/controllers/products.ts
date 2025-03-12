@@ -4,7 +4,19 @@ import createHttpError from "http-errors";
 import mongoose from "mongoose";
 
 export const getAllProducts: RequestHandler = async (req, res) => {
-  const products = await Product.find();
+  const { new: qNew, category: qCategory } = req.query;
+
+  const filter: Record<string, unknown> = {};
+
+  if (qCategory) {
+    filter.categories = { $in: [qCategory] };
+  }
+
+  const products =
+    qNew === "true"
+      ? await Product.find(filter).sort({ createdAt: -1 }).limit(1)
+      : await Product.find(filter);
+
   res.status(200).json(products);
 };
 

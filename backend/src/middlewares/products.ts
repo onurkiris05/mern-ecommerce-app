@@ -21,22 +21,22 @@ export const validateCreateProduct: RequestHandler<unknown, unknown, ProductBody
   const { title, desc, img, price } = req.body;
 
   if (!title) {
-    return next(createHttpError(400, "Title is required"));
+    throw createHttpError(400, "Title is required");
   }
 
   const existingProduct = await Product.findOne({ title });
   if (existingProduct) {
-    return next(createHttpError(409, "Product title already exists"));
+    throw createHttpError(409, "Product title already exists");
   }
 
   if (!desc) {
-    return next(createHttpError(400, "Description is required"));
+    throw createHttpError(400, "Description is required");
   }
   if (!img) {
-    return next(createHttpError(400, "Image is required"));
+    throw createHttpError(400, "Image is required");
   }
   if (!price) {
-    return next(createHttpError(400, "Price is required"));
+    throw createHttpError(400, "Price is required");
   }
 
   next();

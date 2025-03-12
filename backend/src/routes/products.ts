@@ -16,7 +16,7 @@ router
   );
 
 router
-  .get("/:id", AuthsService.verifyTokenAndAdmin, handleAsync(ProductsController.getProduct))
+  .get("/:id", handleAsync(ProductsController.getProduct))
   .put(
     "/:id",
     AuthsService.verifyTokenAndAdmin,
