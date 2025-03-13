@@ -8,10 +8,10 @@ export const Color = [
 ];
 
 export const Size = [
-  { label: "X-Large", value: "xlarge" },
-  { label: "Large", value: "large" },
-  { label: "Medium", value: "medium" },
-  { label: "Small", value: "small" },
+  { label: "X-Large", value: "XL" },
+  { label: "Large", value: "L" },
+  { label: "Medium", value: "M" },
+  { label: "Small", value: "S" },
 ];
 
 export const Sort = [

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Category } from "../data/categoryItems";
 import { Button } from "./Button";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   position: relative;
@@ -51,7 +52,9 @@ function CategoryItem({ category }: CategoryItemProps) {
     <Container>
       <Image src={category.img} alt={category.title} />
       <Title>{category.title}</Title>
-      <Button.Secondary size="1.25rem">SHOP NOW</Button.Secondary>
+      <Link to={`/products/${category.cat}`} onClick={() => window.scrollTo(0, 0)}>
+        <Button.Secondary size="1.25rem">SHOP NOW</Button.Secondary>
+      </Link>
     </Container>
   );
 }

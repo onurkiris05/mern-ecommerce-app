@@ -7,6 +7,7 @@ import authsRoutes from "./routes/auths";
 import productsRoutes from "./routes/products";
 import ordersRoutes from "./routes/orders";
 import cartsRoutes from "./routes/carts";
+import stripeRoutes from "./routes/stripe";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/api/products", productsRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/carts", cartsRoutes);
 app.use("/api/auths", authsRoutes);
+app.use("/api/checkout", stripeRoutes);
 
 app.use((req, res, next) => {
   next(createHttpError(404, "Page Not found"));
