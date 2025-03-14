@@ -19,7 +19,7 @@ function Home() {
       <Announcement />
       <Slider />
       <Categories />
-      <Products />
+      <Products gender="" filters={{}} sort="" />
       <Newsletter />
       <Footer />
     </Container>

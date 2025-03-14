@@ -15,8 +15,8 @@ export const Size = [
 ];
 
 export const Sort = [
-  { label: "Price Low-to-High", value: "low-high" },
-  { label: "Price High-to-Low", value: "high-low" },
+  { label: "Price Low-to-High", value: "asc" },
+  { label: "Price High-to-Low", value: "desc" },
   { label: "Newest", value: "newest" },
   { label: "Popular", value: "popular" },
 ];

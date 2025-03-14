@@ -1,24 +1,21 @@
 import { InputLabel, Select, MenuItem, FormControl } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { useState } from "react";
-
-interface MenuItemProps {
-  label: string;
-  value: number | string;
-}
+import { OptionProps } from "../../api/constants";
 
 interface SelectFormProps {
   label: string;
-  menuItems: MenuItemProps[];
-  OnChange: (value: string | number) => void;
+  name: string;
+  menuItems: OptionProps[];
+  OnChange: (event: SelectChangeEvent<string | number>) => void;
 }
 
-function SelectForm({ label, menuItems, OnChange }: SelectFormProps) {
+function SelectForm({ label, name, menuItems, OnChange }: SelectFormProps) {
   const [value, setValue] = useState<number | string>("");
 
   function handleChange(e: SelectChangeEvent<string | number>) {
     setValue(e.target.value);
-    OnChange(e.target.value);
+    OnChange(e);
   }
 
   return (
@@ -29,6 +26,7 @@ function SelectForm({ label, menuItems, OnChange }: SelectFormProps) {
         id={`${label}-select`}
         value={value}
         label={label}
+        name={name}
         onChange={handleChange}
       >
         <MenuItem value="">

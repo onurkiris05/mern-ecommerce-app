@@ -2,20 +2,23 @@ import { RequestHandler } from "express";
 import Product from "../models/product";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
+import { getSortOption } from "../utils/sort";
 
 export const getAllProducts: RequestHandler = async (req, res) => {
-  const { new: qNew, category: qCategory } = req.query;
+  const { new: qNew, gender: qGender, category: qCategory, size: qSize, sort: qSort } = req.query;
 
   const filter: Record<string, unknown> = {};
 
-  if (qCategory) {
-    filter.categories = { $in: [qCategory] };
-  }
+  if (qGender) filter.genders = { $in: [qGender] };
+  if (qCategory) filter.categories = { $in: [qCategory] };
+  if (qSize) filter.sizes = { $in: [qSize] };
+
+  const sortOption = getSortOption(qSort as string);
 
   const products =
     qNew === "true"
       ? await Product.find(filter).sort({ createdAt: -1 }).limit(1)
-      : await Product.find(filter);
+      : await Product.find(filter).sort(sortOption);
 
   res.status(200).json(products);
 };

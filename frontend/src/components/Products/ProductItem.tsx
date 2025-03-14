@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Product } from "../../data/productItems";
+import { Product } from "../../models/product";
 import OpenInFullRoundedIcon from "@mui/icons-material/OpenInFullRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import { Button } from "../Button";

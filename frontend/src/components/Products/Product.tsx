@@ -88,7 +88,7 @@ function SingleProduct() {
                 </Attribute>
                 <Attribute>
                   <Text>Size: </Text>
-                  <SelectForm label="Size" menuItems={sizes} OnChange={() => {}} />
+                  <SelectForm label="Size" name="size" menuItems={sizes} OnChange={() => {}} />
                 </Attribute>
               </Container>
               <Container className="d-flex flex-wrap gap-3 gap-md-5 justify-content-center justify-content-md-start">

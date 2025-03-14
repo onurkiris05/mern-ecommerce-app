@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import Products from "./Products";
 import SelectForm from "../Forms/SelectForm";
-import * as SelectItems from "../../data/selectItems";
+import { SelectChangeEvent } from "@mui/material/Select";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import * as ConstantsApi from "../../api/constants";
 
 const Container = styled.div`
   padding-block: 2rem;
@@ -28,9 +31,35 @@ const Filter = styled.div`
 const FilterTitle = styled.h3``;
 
 function FilterProducts() {
-  function handleOnChange(value: string | number) {
-    console.log(value);
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState("");
+  const [constants, setConstants] = useState<ConstantsApi.ConstantsProps>({
+    categoryOptions: [],
+    genderOptions: [],
+    sizeOptions: [],
+    sortOptions: [],
+  });
+  const gender = useLocation().pathname.split("/")[2];
+
+  function handleFilters(e: SelectChangeEvent<string | number>) {
+    setFilters((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   }
+
+  function handleSort(e: SelectChangeEvent<string | number>) {
+    setSort(e.target.value as string);
+  }
+
+  useEffect(() => {
+    const fetchConstants = async () => {
+      const data = await ConstantsApi.getConstants();
+      setConstants(data);
+    };
+
+    fetchConstants();
+  }, []);
 
   return (
     <Container>
@@ -38,15 +67,30 @@ function FilterProducts() {
       <FilterContainer>
         <Filter>
           <FilterTitle>Filter:</FilterTitle>
-          <SelectForm label="Color" menuItems={SelectItems.Color} OnChange={handleOnChange} />
-          <SelectForm label="Size" menuItems={SelectItems.Size} OnChange={handleOnChange} />
+          <SelectForm
+            label="Category"
+            name="category"
+            menuItems={constants.categoryOptions}
+            OnChange={handleFilters}
+          />
+          <SelectForm
+            label="Size"
+            name="size"
+            menuItems={constants.sizeOptions}
+            OnChange={handleFilters}
+          />
         </Filter>
         <Filter>
           <FilterTitle>Sort: </FilterTitle>
-          <SelectForm label="Sort" menuItems={SelectItems.Sort} OnChange={handleOnChange} />
+          <SelectForm
+            label="Sort"
+            name="sort"
+            menuItems={constants.sortOptions}
+            OnChange={handleSort}
+          />
         </Filter>
       </FilterContainer>
-      <Products />
+      <Products gender={gender} filters={filters} sort={sort} />
     </Container>
   );
 }
