@@ -4,6 +4,7 @@ import { Badge } from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Logo from "./Logo";
 import { Col, Container, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 const Language = styled.span`
   font-size: 1rem;
@@ -30,6 +31,8 @@ const MenuItem = styled.div`
 `;
 
 function Header() {
+  const quantity = useSelector((state: any) => state.cart.quantity);
+
   return (
     <Container fluid className=" py-3">
       <Row className="d-flex justify-content-between align-items-center">
@@ -55,7 +58,7 @@ function Header() {
           <MenuItem>REGISTER</MenuItem>
           <MenuItem>SIGN IN</MenuItem>
           <MenuItem>
-            <Badge badgeContent={4} color="primary">
+            <Badge badgeContent={quantity} color="primary">
               <ShoppingCartOutlinedIcon color="action" />
             </Badge>
           </MenuItem>

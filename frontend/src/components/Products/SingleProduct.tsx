@@ -4,8 +4,10 @@ import ColorForm from "../Forms/ColorForm";
 import SelectForm from "../Forms/SelectForm";
 import QuantityForm from "../Forms/QuantityForm";
 import { Product } from "../../models/product";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SelectChangeEvent } from "@mui/material/Select";
+import { addProduct } from "../../redux/cartRedux";
+import { useDispatch } from "react-redux";
 
 const ProductContainer = styled(Container)`
   min-height: 60vh;
@@ -32,8 +34,6 @@ const Price = styled.p`
   font-size: 3rem;
   font-weight: 200;
 `;
-
-const ProductForm = styled.form``;
 
 const Attribute = styled.div`
   display: flex;
@@ -68,6 +68,7 @@ function SingleProduct({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
+  const dispatch = useDispatch();
 
   function handleQuantity(qty: number) {
     setQuantity(qty);
@@ -81,6 +82,10 @@ function SingleProduct({ product }: { product: Product }) {
     setSize(e.target.value as string);
   }
 
+  const handleAddToCart = () => {
+    dispatch(addProduct({ ...product, quantity, color, size }));
+  };
+
   return (
     <ProductContainer>
       <Row>
@@ -92,27 +97,25 @@ function SingleProduct({ product }: { product: Product }) {
             <Title>{product.title}</Title>
             <Desc>{product.desc}</Desc>
             <Price>{`$ ${product.price}`}</Price>
-            <ProductForm>
-              <Container className="d-flex flex-wrap gap-2 gap-md-5 mb-4 justify-content-center justify-content-md-start">
-                <Attribute>
-                  <Text>Color: </Text>
-                  <ColorForm name="color" colors={product.colors} size={2} onChange={handleColor} />
-                </Attribute>
-                <Attribute>
-                  <Text>Size: </Text>
-                  <SelectForm
-                    label="Size"
-                    name="size"
-                    menuItems={product.sizes?.map((size) => ({ value: size, label: size }))}
-                    OnChange={handleSize}
-                  />
-                </Attribute>
-              </Container>
-              <Container className="d-flex flex-wrap gap-3 gap-md-5 justify-content-center justify-content-md-start">
-                <QuantityForm size={2} max={10} onChange={handleQuantity} />
-                <AddCartButton type="submit">ADD TO CART</AddCartButton>
-              </Container>
-            </ProductForm>
+            <Container className="d-flex flex-wrap gap-2 gap-md-5 mb-4 justify-content-center justify-content-md-start">
+              <Attribute>
+                <Text>Color: </Text>
+                <ColorForm name="color" colors={product.colors} size={2} onChange={handleColor} />
+              </Attribute>
+              <Attribute>
+                <Text>Size: </Text>
+                <SelectForm
+                  label="Size"
+                  name="size"
+                  menuItems={product.sizes?.map((size) => ({ value: size, label: size }))}
+                  OnChange={handleSize}
+                />
+              </Attribute>
+            </Container>
+            <Container className="d-flex flex-wrap gap-3 gap-md-5 justify-content-center justify-content-md-start">
+              <QuantityForm size={2} max={10} onChange={handleQuantity} />
+              <AddCartButton onClick={handleAddToCart}>ADD TO CART</AddCartButton>
+            </Container>
           </Container>
         </Col>
       </Row>
