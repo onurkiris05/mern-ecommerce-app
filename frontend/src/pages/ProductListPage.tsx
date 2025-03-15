@@ -10,7 +10,7 @@ const Container = styled.div`
   margin: 0 auto;
 `;
 
-function ProductList() {
+function ProductListPage() {
   return (
     <Container>
       <Header />
@@ -22,4 +22,4 @@ function ProductList() {
   );
 }
 
-export default ProductList;
+export default ProductListPage;

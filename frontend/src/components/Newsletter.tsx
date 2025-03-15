@@ -2,7 +2,7 @@ import styled from "styled-components";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 
 const Container = styled.div`
-  height: 50vh;
+  height: 30vh;
   background-color: var(--clr-4);
   display: flex;
   flex-direction: column;

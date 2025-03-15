@@ -13,17 +13,17 @@ interface ProductsProps {
 function Products({ gender, filters, sort }: ProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
 
-  const loadProducts = async () => {
-    try {
-      const query = { gender, ...filters, sort };
-      const products = await ProductApi.getProducts(query);
-      setProducts(products);
-    } catch (error) {
-      console.error("Error loading notes: ", error);
-    }
-  };
-
   useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const query = { gender, ...filters, sort };
+        const products = await ProductApi.getProducts(query);
+        setProducts(products);
+      } catch (error) {
+        console.error("Error loading products: ", error);
+      }
+    };
+
     loadProducts();
   }, [gender, filters, sort]);
 

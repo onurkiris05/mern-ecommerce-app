@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -23,6 +24,12 @@ const LogoLast = styled.span<StyleProps>`
   color: var(--clr-5);
 `;
 
+const StyledLink = styled(Link)`
+  all: unset;
+  display: flex;
+  cursor: pointer;
+`;
+
 interface LogoProps {
   size?: string;
 }
@@ -30,8 +37,10 @@ interface LogoProps {
 function Logo({ size }: LogoProps) {
   return (
     <Container>
-      <LogoFirst size={size}>trend</LogoFirst>
-      <LogoLast size={size}>NEST</LogoLast>
+      <StyledLink to="/">
+        <LogoFirst size={size}>trend</LogoFirst>
+        <LogoLast size={size}>NEST</LogoLast>
+      </StyledLink>
     </Container>
   );
 }

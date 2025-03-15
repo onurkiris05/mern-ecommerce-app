@@ -4,8 +4,9 @@ export interface Product {
   desc: string;
   img: string;
   categories?: string[];
-  size?: string[];
-  color?: string[];
+  genders?: string[];
+  sizes?: string[];
+  colors?: string[];
   price: number;
   inStock: boolean;
   createdAt: string;

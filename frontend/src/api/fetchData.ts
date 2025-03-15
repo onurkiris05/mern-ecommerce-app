@@ -1,8 +1,9 @@
 import * as Err from "../errors/http_errors";
 
 export async function fetchData(input: RequestInfo, init?: RequestInit) {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDA0NzM0YzliM2YxZTllNjc3MDdlNSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTc0MTk0NDQ1MSwiZXhwIjoxNzQyMDMwODUxfQ.-sZKXSFah2Tx3gIaYOX7ZT8KXFcboqphMIN1IJ23SGc";
+  // const token =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDA0NzM0YzliM2YxZTllNjc3MDdlNSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTc0MTk0NDQ1MSwiZXhwIjoxNzQyMDMwODUxfQ.-sZKXSFah2Tx3gIaYOX7ZT8KXFcboqphMIN1IJ23SGc";
+  const token = "";
 
   const headers = {
     "Content-Type": "application/json",

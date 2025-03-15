@@ -5,6 +5,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as ConstantsApi from "../../api/constants";
+import { Capitalize } from "../../utils";
 
 const Container = styled.div`
   padding-block: 2rem;
@@ -54,8 +55,12 @@ function FilterProducts() {
 
   useEffect(() => {
     const fetchConstants = async () => {
-      const data = await ConstantsApi.getConstants();
-      setConstants(data);
+      try {
+        const data = await ConstantsApi.getConstants();
+        setConstants(data);
+      } catch (e) {
+        console.error("Error loading constants: ", e);
+      }
     };
 
     fetchConstants();
@@ -63,7 +68,7 @@ function FilterProducts() {
 
   return (
     <Container>
-      <Title>Dresses</Title>
+      <Title>{Capitalize(gender)}</Title>
       <FilterContainer>
         <Filter>
           <FilterTitle>Filter:</FilterTitle>

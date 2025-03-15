@@ -33,7 +33,7 @@ const Window = styled.div`
   padding: 2rem;
 `;
 
-function Register() {
+function RegisterPage() {
   return (
     <Body>
       <Background src="/assets/images/register-bg.jpg" />
@@ -81,4 +81,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default RegisterPage;

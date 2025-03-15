@@ -8,7 +8,7 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(AuthsService.verifyTokenAndAdmin, handleAsync(ProductsController.getAllProducts))
+  .get(handleAsync(ProductsController.getAllProducts))
   .post(
     AuthsService.verifyTokenAndAdmin,
     handleAsync(ProductsService.validateCreateProduct),

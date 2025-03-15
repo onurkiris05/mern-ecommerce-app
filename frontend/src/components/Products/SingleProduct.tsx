@@ -3,6 +3,14 @@ import styled from "styled-components";
 import ColorForm from "../Forms/ColorForm";
 import SelectForm from "../Forms/SelectForm";
 import QuantityForm from "../Forms/QuantityForm";
+import { Product } from "../../models/product";
+import { useEffect, useState } from "react";
+import { SelectChangeEvent } from "@mui/material/Select";
+
+const ProductContainer = styled(Container)`
+  min-height: 60vh;
+  padding: 5rem 0;
+`;
 
 const Image = styled.img`
   width: 100%;
@@ -56,50 +64,59 @@ const Text = styled.p`
   margin: 0;
 `;
 
-const colors = ["black", "red", "teal", "yellow"];
+function SingleProduct({ product }: { product: Product }) {
+  const [quantity, setQuantity] = useState(1);
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
 
-const sizes = [
-  { label: "X-Large", value: "xlarge" },
-  { label: "Large", value: "large" },
-  { label: "Medium", value: "medium" },
-  { label: "Small", value: "small" },
-];
+  function handleQuantity(qty: number) {
+    setQuantity(qty);
+  }
 
-function SingleProduct() {
+  function handleColor(color: string) {
+    setColor(color);
+  }
+
+  function handleSize(e: SelectChangeEvent<string | number>) {
+    setSize(e.target.value as string);
+  }
+
   return (
-    <Container>
+    <ProductContainer>
       <Row>
         <Col md={6}>
-          <Image src="/assets/images/product-1.png" />
+          <Image src={product.img} />
         </Col>
         <Col md={6}>
           <Container className="d-flex flex-column align-items-center align-items-md-start py-5 p-md-5">
-            <Title>Coal Tshirt</Title>
-            <Desc>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel possimus nesciunt ullam,
-              blanditiis architecto autem?
-            </Desc>
-            <Price>$ 20.00</Price>
+            <Title>{product.title}</Title>
+            <Desc>{product.desc}</Desc>
+            <Price>{`$ ${product.price}`}</Price>
             <ProductForm>
               <Container className="d-flex flex-wrap gap-2 gap-md-5 mb-4 justify-content-center justify-content-md-start">
                 <Attribute>
                   <Text>Color: </Text>
-                  <ColorForm colors={colors} size={2} onChange={() => {}} />
+                  <ColorForm name="color" colors={product.colors} size={2} onChange={handleColor} />
                 </Attribute>
                 <Attribute>
                   <Text>Size: </Text>
-                  <SelectForm label="Size" name="size" menuItems={sizes} OnChange={() => {}} />
+                  <SelectForm
+                    label="Size"
+                    name="size"
+                    menuItems={product.sizes?.map((size) => ({ value: size, label: size }))}
+                    OnChange={handleSize}
+                  />
                 </Attribute>
               </Container>
               <Container className="d-flex flex-wrap gap-3 gap-md-5 justify-content-center justify-content-md-start">
-                <QuantityForm size={2} max={10} onChange={() => {}} />
+                <QuantityForm size={2} max={10} onChange={handleQuantity} />
                 <AddCartButton type="submit">ADD TO CART</AddCartButton>
               </Container>
             </ProductForm>
           </Container>
         </Col>
       </Row>
-    </Container>
+    </ProductContainer>
   );
 }
 

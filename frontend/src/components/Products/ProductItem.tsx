@@ -3,6 +3,7 @@ import { Product } from "../../models/product";
 import OpenInFullRoundedIcon from "@mui/icons-material/OpenInFullRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import { Button } from "../Button";
+import { Link } from "react-router-dom";
 
 interface ProductItemProps {
   product: Product;
@@ -56,9 +57,11 @@ function ProductItem({ product }: ProductItemProps) {
   return (
     <Container>
       <Image src={product.img} />
-      <Button.Icon>
-        <OpenInFullRoundedIcon fontSize="inherit" />
-      </Button.Icon>
+      <Link to={`/product/${product._id}`} onClick={() => window.scrollTo(0, 0)}>
+        <Button.Icon>
+          <OpenInFullRoundedIcon fontSize="inherit" />
+        </Button.Icon>
+      </Link>
       <Button.Icon>
         <FavoriteBorderRoundedIcon fontSize="inherit" />
       </Button.Icon>

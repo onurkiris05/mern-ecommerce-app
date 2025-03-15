@@ -23,3 +23,8 @@ export async function getProducts(params?: GetProductsParams): Promise<Product[]
   const response = await fetchData(url, { method: "GET" });
   return response.json();
 }
+
+export async function getProduct(id: string): Promise<Product> {
+  const response = await fetchData(`/api/products/${id}`, { method: "GET" });
+  return response.json();
+}

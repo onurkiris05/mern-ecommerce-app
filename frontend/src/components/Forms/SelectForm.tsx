@@ -6,7 +6,7 @@ import { OptionProps } from "../../api/constants";
 interface SelectFormProps {
   label: string;
   name: string;
-  menuItems: OptionProps[];
+  menuItems?: OptionProps[];
   OnChange: (event: SelectChangeEvent<string | number>) => void;
 }
 
@@ -32,13 +32,11 @@ function SelectForm({ label, name, menuItems, OnChange }: SelectFormProps) {
         <MenuItem value="">
           <em>None</em>
         </MenuItem>
-        {menuItems &&
-          menuItems.length > 0 &&
-          menuItems.map((item, i) => (
-            <MenuItem key={i} value={item.value}>
-              {item.label}
-            </MenuItem>
-          ))}
+        {menuItems?.map((item, i) => (
+          <MenuItem key={i} value={item.value}>
+            {item.label}
+          </MenuItem>
+        ))}
       </Select>
     </FormControl>
   );

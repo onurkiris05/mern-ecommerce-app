@@ -1,12 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-interface ColorFormProps {
-  colors: string[];
-  onChange: (value: string) => void;
-  size?: number;
-}
-
 const ColorContainer = styled.div`
   display: flex;
   gap: 1rem;
@@ -25,6 +19,13 @@ const ColorCircle = styled.div<{ color: string; selected: boolean; size: number 
   }
 `;
 
+interface ColorFormProps {
+  name: string;
+  colors?: string[];
+  onChange: (value: string) => void;
+  size?: number;
+}
+
 function ColorForm({ colors, onChange, size = 1 }: ColorFormProps) {
   const [selectedColor, setSelectedColor] = useState<string>("");
 
@@ -35,7 +36,7 @@ function ColorForm({ colors, onChange, size = 1 }: ColorFormProps) {
 
   return (
     <ColorContainer>
-      {colors.map((color, index) => (
+      {colors?.map((color, index) => (
         <ColorCircle
           key={index}
           color={color}

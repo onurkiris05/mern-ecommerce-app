@@ -12,12 +12,22 @@ export enum CategoryEnum {
   PANT = "pant",
 }
 
+export const CategoryOptions = Object.values(CategoryEnum).map((value) => ({
+  label: value.charAt(0).toUpperCase() + value.slice(1),
+  value,
+}));
+
 export enum GenderEnum {
   MEN = "men",
   WOMEN = "women",
   UNISEX = "unisex",
   CHILD = "child",
 }
+
+export const GenderOptions = Object.values(GenderEnum).map((value) => ({
+  label: value.charAt(0).toUpperCase() + value.slice(1),
+  value,
+}));
 
 export enum SizeEnum {
   XL = "XL",
@@ -27,26 +37,16 @@ export enum SizeEnum {
   XS = "XS",
 }
 
+export const SizeOptions = Object.values(SizeEnum).map((value) => ({
+  label: value,
+  value,
+}));
+
 export enum SortEnum {
   PRICE_ASC = "asc",
   PRICE_DESC = "desc",
   NEWEST = "newest",
 }
-
-export const CategoryOptions = Object.values(CategoryEnum).map((value) => ({
-  label: value.charAt(0).toUpperCase() + value.slice(1),
-  value,
-}));
-
-export const GenderOptions = Object.values(GenderEnum).map((value) => ({
-  label: value.charAt(0).toUpperCase() + value.slice(1),
-  value,
-}));
-
-export const SizeOptions = Object.values(SizeEnum).map((value) => ({
-  label: value,
-  value,
-}));
 
 export const SortOptions = [
   { label: "Price Low-to-High", value: SortEnum.PRICE_ASC },

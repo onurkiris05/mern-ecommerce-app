@@ -12,7 +12,7 @@ const Container = styled.div`
   margin: 0 auto;
 `;
 
-function Home() {
+function HomePage() {
   return (
     <Container>
       <Header />
@@ -26,4 +26,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default HomePage;

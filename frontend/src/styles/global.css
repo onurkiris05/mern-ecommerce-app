@@ -35,6 +35,11 @@
   font-weight: 400;
 }
 
+a {
+  all: unset;
+  display: flex;
+}
+
 body {
   background: #fff;
   color: var(--clr-1);
