@@ -10,7 +10,7 @@ import { addProduct } from "../../redux/cartRedux";
 import { useDispatch } from "react-redux";
 
 const ProductContainer = styled(Container)`
-  min-height: 60vh;
+  min-height: 70vh;
   padding: 5rem 0;
 `;
 
@@ -83,7 +83,9 @@ function SingleProduct({ product }: { product: Product }) {
   }
 
   const handleAddToCart = () => {
-    dispatch(addProduct({ ...product, quantity, color, size }));
+    const selectedColor = color || product.colors?.[0];
+    const selectedSize = size || product.sizes?.[0];
+    dispatch(addProduct({ ...product, quantity, color: selectedColor, size: selectedSize }));
   };
 
   return (

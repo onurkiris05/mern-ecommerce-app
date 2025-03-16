@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import QuantityForm from "../Forms/QuantityForm";
 import { Col, Container, Row } from "react-bootstrap";
-import { useEffect, useState } from "react";
-import { updateProduct } from "../../redux/cartRedux";
+import { useState } from "react";
+import { updateProduct, deleteProduct } from "../../redux/cartRedux";
 import { useDispatch } from "react-redux";
+import { Button } from "../Button";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface CartProductProps {
   product: {
@@ -19,9 +21,27 @@ interface CartProductProps {
   };
 }
 
+const ButtonWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.2s;
+`;
+
 const Body = styled(Container)`
+  position: relative;
   display: flex;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    ${ButtonWrapper} {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 `;
 
 const ImageWrapper = styled.div``;
@@ -76,8 +96,17 @@ function CartProduct({ product }: CartProductProps) {
     dispatch(updateProduct({ ...product, quantity: qty }));
   };
 
+  const handleDelete = () => {
+    dispatch(deleteProduct({ ...product }));
+  };
+
   return (
     <Body>
+      <ButtonWrapper>
+        <Button.Icon size="1.5rem" onClick={handleDelete}>
+          <DeleteIcon fontSize="inherit" />
+        </Button.Icon>
+      </ButtonWrapper>
       <Row>
         <ImageWrapper as={Col} xs={4} sm={3}>
           <Image src={product.img} />

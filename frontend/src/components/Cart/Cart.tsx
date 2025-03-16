@@ -1,17 +1,17 @@
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import { Button } from "../Button";
-import cartItems from "../../data/cartItems";
 import CartProduct from "./CartProduct";
 import CartSummary from "./CartSummary";
 import { md } from "../../utils/responsive";
 import { useSelector } from "react-redux";
 
 const Body = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 
   ${md({
     borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
@@ -51,7 +51,9 @@ function Cart() {
     <Body className="pt-5 px-1 px-sm-4">
       <Title>Your Bag</Title>
       <NavWrapper>
-        <Button.Primary size="1rem">CONTINUE SHOPPING</Button.Primary>
+        <Button.Secondary size="1rem" style={{ background: "var(--clr-1)" }}>
+          CONTINUE SHOPPING
+        </Button.Secondary>
         <LinkWrapper className="d-none d-sm-flex">
           <Link>
             Shopping Bag (<Span>{quantity}</Span>)
@@ -60,7 +62,7 @@ function Cart() {
             Your Wishlist (<Span>0</Span>)
           </Link>
         </LinkWrapper>
-        <Button.Secondary style={{ background: "#333" }} size="1rem">
+        <Button.Secondary style={{ background: "var(--clr-1)" }} size="1rem">
           CHECKOUT NOW
         </Button.Secondary>
       </NavWrapper>

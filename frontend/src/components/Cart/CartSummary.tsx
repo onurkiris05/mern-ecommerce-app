@@ -52,7 +52,7 @@ function CartSummary({ subtotal, shipping, shippingDiscount }: CartSummaryProps)
         <Summary>Subtotal</Summary>
         <Summary>$ {total.toFixed(2)}</Summary>
       </TextWrapper>
-      <Button.Secondary size="1rem" style={{ backgroundColor: "black" }}>
+      <Button.Secondary size="1rem" style={{ backgroundColor: "var(--clr-1)" }}>
         CHECKOUT NOW
       </Button.Secondary>
     </Body>

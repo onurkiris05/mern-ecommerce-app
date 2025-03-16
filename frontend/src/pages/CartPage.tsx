@@ -6,6 +6,9 @@ import Header from "../components/Header";
 
 const Container = styled.div`
   max-width: var(--max-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
 `;
 
