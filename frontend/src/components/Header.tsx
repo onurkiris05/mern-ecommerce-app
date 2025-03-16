@@ -5,6 +5,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Logo from "./Logo";
 import { Col, Container, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Language = styled.span`
   font-size: 1rem;
@@ -27,6 +28,12 @@ const Input = styled.input`
 const MenuItem = styled.div`
   font-size: 1rem;
   margin-right: 1rem;
+  cursor: pointer;
+`;
+
+const StyledLink = styled(Link)`
+  all: unset;
+  display: flex;
   cursor: pointer;
 `;
 
@@ -58,9 +65,11 @@ function Header() {
           <MenuItem>REGISTER</MenuItem>
           <MenuItem>SIGN IN</MenuItem>
           <MenuItem>
-            <Badge badgeContent={quantity} color="primary">
-              <ShoppingCartOutlinedIcon color="action" />
-            </Badge>
+            <StyledLink to="/cart">
+              <Badge badgeContent={quantity} color="primary">
+                <ShoppingCartOutlinedIcon color="action" />
+              </Badge>
+            </StyledLink>
           </MenuItem>
         </Col>
       </Row>

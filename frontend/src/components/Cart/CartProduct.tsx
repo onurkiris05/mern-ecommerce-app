@@ -1,10 +1,22 @@
 import styled from "styled-components";
-import { CartProductModel } from "../../data/cartItems";
 import QuantityForm from "../Forms/QuantityForm";
 import { Col, Container, Row } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { updateProduct } from "../../redux/cartRedux";
+import { useDispatch } from "react-redux";
 
 interface CartProductProps {
-  product: CartProductModel;
+  product: {
+    _id: string;
+    title: string;
+    desc: string;
+    img: string;
+    price: number;
+    quantity: number;
+    color: string;
+    size: string;
+    stock: number;
+  };
 }
 
 const Body = styled(Container)`
@@ -56,20 +68,28 @@ const Price = styled.h2`
 `;
 
 function CartProduct({ product }: CartProductProps) {
+  const [qty, setQty] = useState(product.quantity);
+  const dispatch = useDispatch();
+
+  const handleQuantity = (qty: number) => {
+    setQty(qty);
+    dispatch(updateProduct({ ...product, quantity: qty }));
+  };
+
   return (
     <Body>
       <Row>
         <ImageWrapper as={Col} xs={4} sm={3}>
-          <Image src={product.imgUrl} />
+          <Image src={product.img} />
         </ImageWrapper>
         <DetailsWrapper as={Col} xs={8} sm={6} className="px-3 pt-4 pb-2 py-sm-4">
           <Text>
             <Span>Product: </Span>
-            {product.name}
+            {product.title}
           </Text>
           <Text>
             <Span>ID: </Span>
-            {product.id}
+            {product._id}
           </Text>
           <Color color={product.color} />
           <Text>
@@ -78,8 +98,13 @@ function CartProduct({ product }: CartProductProps) {
           </Text>
         </DetailsWrapper>
         <QuantityWrapper as={Col} sm={3}>
-          <QuantityForm max={product.stock} size={1.5} onChange={() => {}} />
-          <Price>$ {product.price}</Price>
+          <QuantityForm
+            max={product.stock}
+            initialValue={product.quantity}
+            size={1.5}
+            onChange={handleQuantity}
+          />
+          <Price>$ {(product.price * qty).toFixed(2)}</Price>
         </QuantityWrapper>
       </Row>
     </Body>

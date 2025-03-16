@@ -8,7 +8,7 @@ export interface Product {
   sizes?: string[];
   colors?: string[];
   price: number;
-  inStock: boolean;
+  stock: number;
   createdAt: string;
   updatedAt: string;
 }

@@ -5,6 +5,7 @@ import cartItems from "../../data/cartItems";
 import CartProduct from "./CartProduct";
 import CartSummary from "./CartSummary";
 import { md } from "../../utils/responsive";
+import { useSelector } from "react-redux";
 
 const Body = styled.div`
   display: flex;
@@ -44,6 +45,8 @@ const Link = styled.a`
 const Span = styled.span``;
 
 function Cart() {
+  const { products, quantity, total } = useSelector((state: any) => state.cart);
+
   return (
     <Body className="pt-5 px-1 px-sm-4">
       <Title>Your Bag</Title>
@@ -51,7 +54,7 @@ function Cart() {
         <Button.Primary size="1rem">CONTINUE SHOPPING</Button.Primary>
         <LinkWrapper className="d-none d-sm-flex">
           <Link>
-            Shopping Bag (<Span>0</Span>)
+            Shopping Bag (<Span>{quantity}</Span>)
           </Link>
           <Link>
             Your Wishlist (<Span>0</Span>)
@@ -64,12 +67,12 @@ function Cart() {
       <Container fluid className="pt-4">
         <Row>
           <Col md={8}>
-            {cartItems.map((item) => (
-              <CartProduct key={item.id} product={item} />
+            {products.map((item: any, i: number) => (
+              <CartProduct key={i} product={item} />
             ))}
           </Col>
           <Col md={4}>
-            <CartSummary subtotal={44.0} shipping={5.99} shippingDiscount={5.99} />
+            <CartSummary subtotal={total} shipping={5.99} shippingDiscount={5.99} />
           </Col>
         </Row>
       </Container>

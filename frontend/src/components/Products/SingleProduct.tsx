@@ -113,7 +113,7 @@ function SingleProduct({ product }: { product: Product }) {
               </Attribute>
             </Container>
             <Container className="d-flex flex-wrap gap-3 gap-md-5 justify-content-center justify-content-md-start">
-              <QuantityForm size={2} max={10} onChange={handleQuantity} />
+              <QuantityForm size={2} max={product.stock} onChange={handleQuantity} />
               <AddCartButton onClick={handleAddToCart}>ADD TO CART</AddCartButton>
             </Container>
           </Container>

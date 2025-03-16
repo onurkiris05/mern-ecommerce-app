@@ -22,7 +22,7 @@ const productSchema = new Schema(
       type: [String],
     },
     price: { type: Number, required: true },
-    inStock: { type: Boolean, default: true },
+    stock: { type: Number, default: 1 },
   },
   { timestamps: true }
 );

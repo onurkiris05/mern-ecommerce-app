@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Button } from "../Button";
+import { useSelector } from "react-redux";
 
 interface CartSummaryProps {
   subtotal: number;
@@ -30,16 +31,14 @@ const Text = styled.p``;
 const Summary = styled.h3``;
 
 function CartSummary({ subtotal, shipping, shippingDiscount }: CartSummaryProps) {
-  function GetTotal() {
-    return subtotal + shipping - shippingDiscount;
-  }
+  const total = useSelector((state: any) => state.cart.total);
 
   return (
     <Body>
       <Title>Order Summary</Title>
       <TextWrapper>
         <Text>Subtotal</Text>
-        <Text>$ {subtotal}</Text>
+        <Text>$ {subtotal.toFixed(2)}</Text>
       </TextWrapper>
       <TextWrapper>
         <Text>Estimated Shipping</Text>
@@ -47,11 +46,11 @@ function CartSummary({ subtotal, shipping, shippingDiscount }: CartSummaryProps)
       </TextWrapper>
       <TextWrapper>
         <Text>Shipping Discount</Text>
-        <Text>$ {shippingDiscount}</Text>
+        <Text>$ -{shippingDiscount}</Text>
       </TextWrapper>
       <TextWrapper>
         <Summary>Subtotal</Summary>
-        <Summary>$ {GetTotal()}</Summary>
+        <Summary>$ {total.toFixed(2)}</Summary>
       </TextWrapper>
       <Button.Secondary size="1rem" style={{ backgroundColor: "black" }}>
         CHECKOUT NOW
