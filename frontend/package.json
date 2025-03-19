@@ -9,6 +9,8 @@
     "@mui/material": "^6.4.6",
     "@reduxjs/toolkit": "^2.6.1",
     "@splinetool/react-spline": "^4.0.0",
+    "@stripe/react-stripe-js": "^3.4.0",
+    "@stripe/stripe-js": "^6.0.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",

@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import { Button } from "../Button";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { createPaymentIntent } from "../../api/stripe";
+import { useState } from "react";
 
 interface CartSummaryProps {
   subtotal: number;
@@ -31,7 +34,21 @@ const Text = styled.p``;
 const Summary = styled.h3``;
 
 function CartSummary({ subtotal, shipping, shippingDiscount }: CartSummaryProps) {
+  const [isProcessing, setIsProcessing] = useState(false);
   const total = useSelector((state: any) => state.cart.total);
+  const navigate = useNavigate();
+
+  const handleCheckout = async () => {
+    try {
+      setIsProcessing(true);
+      const clientSecret = await createPaymentIntent(total);
+      navigate("/checkout", { state: { clientSecret } });
+    } catch (error) {
+      alert("Payment error! Please try again.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <Body>
@@ -52,8 +69,13 @@ function CartSummary({ subtotal, shipping, shippingDiscount }: CartSummaryProps)
         <Summary>Subtotal</Summary>
         <Summary>$ {total.toFixed(2)}</Summary>
       </TextWrapper>
-      <Button.Secondary size="1rem" style={{ backgroundColor: "var(--clr-1)" }}>
-        CHECKOUT NOW
+      <Button.Secondary
+        onClick={handleCheckout}
+        disabled={isProcessing}
+        size="1rem"
+        style={{ backgroundColor: "var(--clr-1)" }}
+      >
+        {isProcessing ? "Processing..." : "CHECKOUT NOW"}
       </Button.Secondary>
     </Body>
   );

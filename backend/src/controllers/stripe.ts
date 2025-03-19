@@ -5,19 +5,18 @@ import createHttpError from "http-errors";
 
 const stripe = new Stripe(env.STRIPE_SECRET);
 
-export const processPayment: RequestHandler = (req, res, next) => {
-  const { tokenId, amount } = req.body;
+export const processPaymentIntent: RequestHandler = async (req, res, next) => {
+  const { amount } = req.body;
 
-  stripe.charges
-    .create({
-      source: tokenId,
-      amount: amount,
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100),
       currency: "usd",
-    })
-    .then((stripeRes) => {
-      res.status(200).json(stripeRes);
-    })
-    .catch((stripeErr) => {
-      return next(createHttpError(500, `Payment processing failed: ${stripeErr.message}`));
+      automatic_payment_methods: { enabled: true },
     });
+
+    res.json({ client_secret: paymentIntent.client_secret });
+  } catch (error) {
+    return next(createHttpError(500, `Payment processing failed: ${error}`));
+  }
 };

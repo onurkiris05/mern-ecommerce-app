@@ -35,6 +35,7 @@ const NavWrapper = styled.div`
 const LinkWrapper = styled.div`
   display: flex;
   gap: 1.5rem;
+  margin-right: 4rem;
 `;
 
 const Link = styled.a`
@@ -62,9 +63,6 @@ function Cart() {
             Your Wishlist (<Span>0</Span>)
           </Link>
         </LinkWrapper>
-        <Button.Secondary style={{ background: "var(--clr-1)" }} size="1rem">
-          CHECKOUT NOW
-        </Button.Secondary>
       </NavWrapper>
       <Container fluid className="pt-4">
         <Row>
