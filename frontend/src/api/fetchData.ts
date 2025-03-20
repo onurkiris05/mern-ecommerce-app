@@ -1,9 +1,8 @@
 import * as Err from "../errors/http_errors";
+import store from "../redux/store";
 
 export async function fetchData(input: RequestInfo, init?: RequestInit) {
-  // const token =
-  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDA0NzM0YzliM2YxZTllNjc3MDdlNSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTc0MTk0NDQ1MSwiZXhwIjoxNzQyMDMwODUxfQ.-sZKXSFah2Tx3gIaYOX7ZT8KXFcboqphMIN1IJ23SGc";
-  const token = "";
+  const token = store.getState().user.currentUser?.token || "";
 
   const headers = {
     "Content-Type": "application/json",
@@ -16,9 +15,7 @@ export async function fetchData(input: RequestInfo, init?: RequestInit) {
     headers,
   });
 
-  if (response.ok) {
-    return response;
-  }
+  if (response.ok) return response;
 
   const errorBody = await response.json();
   const errorMessage = errorBody.error;

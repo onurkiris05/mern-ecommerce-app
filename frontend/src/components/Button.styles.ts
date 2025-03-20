@@ -8,6 +8,11 @@ const baseButtonStyles = css<{ size?: string; padding?: string }>`
   border-color: var(--clr-1);
   cursor: pointer;
   transition: 0.2s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 export const Primary = styled.button<{ size?: string; padding?: string }>`

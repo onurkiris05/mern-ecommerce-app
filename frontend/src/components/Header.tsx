@@ -6,6 +6,7 @@ import Logo from "./Logo";
 import { Col, Container, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { persistor } from "../redux/store";
 
 const Language = styled.span`
   font-size: 1rem;
@@ -37,8 +38,20 @@ const StyledLink = styled(Link)`
   cursor: pointer;
 `;
 
+const Text = styled.span`
+  margin-right: 1.5rem;
+`;
+
 function Header() {
   const quantity = useSelector((state: any) => state.cart.quantity);
+  const user = useSelector((state: any) => state.user.currentUser);
+
+  const handleLogout = () => {
+    if (user) {
+      persistor.purge();
+      window.location.href = "/";
+    }
+  };
 
   return (
     <Container fluid className=" py-3">
@@ -62,8 +75,24 @@ function Header() {
           md={4}
           className="d-flex justify-content-center justify-content-md-end py-2 py-sm-0"
         >
-          <MenuItem>REGISTER</MenuItem>
-          <MenuItem>SIGN IN</MenuItem>
+          {user ? (
+            <>
+              <Text>
+                welcome, <strong>{user.username}</strong>
+              </Text>
+              <MenuItem onClick={handleLogout}>LOGOUT</MenuItem>
+            </>
+          ) : (
+            <>
+              <MenuItem>
+                <StyledLink to="/register">REGISTER</StyledLink>
+              </MenuItem>
+              <MenuItem>
+                <StyledLink to="/signin">SIGN IN</StyledLink>
+              </MenuItem>
+            </>
+          )}
+
           <MenuItem>
             <StyledLink to="/cart">
               <Badge badgeContent={quantity} color="primary">
