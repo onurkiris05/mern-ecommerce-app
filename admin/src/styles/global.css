@@ -38,6 +38,7 @@
 a {
   all: unset;
   display: flex;
+  color: inherit;
 }
 
 body {
