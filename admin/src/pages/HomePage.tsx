@@ -6,7 +6,7 @@ import WidgetSm from "../components/Widgets/WidgetSm";
 import WidgetLg from "../components/Widgets/WidgetLg";
 
 const Container = styled.div`
-  flex: 4;
+  flex: 1;
 `;
 
 const WidgetsContainer = styled.div`

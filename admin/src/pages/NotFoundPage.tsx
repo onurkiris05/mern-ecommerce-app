@@ -16,6 +16,7 @@ const Content = styled.div`
 
 const NotFoundMessage = styled.h1`
   text-align: center;
+  font-size: 3rem;
 `;
 
 function NotFoundPage() {

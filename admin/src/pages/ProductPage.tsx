@@ -5,7 +5,7 @@ import { productData } from "../dummyData";
 import { Publish } from "@mui/icons-material";
 
 const Container = styled.div`
-  flex: 4;
+  flex: 1;
   padding: 1.25rem;
 `;
 

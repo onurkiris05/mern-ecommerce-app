@@ -22,14 +22,15 @@ const List = styled.ul`
 
 const ListItem = styled.li`
   display: flex;
+  width: 100%;
   align-items: center;
-  justify-content: space-between;
   margin: 1.25rem 0;
 `;
 
 const User = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 0 1rem;
 `;
 
 const Username = styled.span`
@@ -56,6 +57,7 @@ const Button = styled.button`
   background-color: #eeeef7;
   color: #555;
   cursor: pointer;
+  margin-left: auto;
 `;
 
 const Icon = styled(Visibility)`

@@ -1,102 +1,81 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import {
   CalendarToday,
   LocationSearching,
   MailOutline,
   PermIdentity,
   PhoneAndroid,
-  Publish,
 } from "@mui/icons-material";
+import ImageSearchIcon from "@mui/icons-material/ImageSearch";
 
 const Container = styled.div`
-  flex: 4;
+  flex: 1;
   padding: 1.25rem;
 `;
 
-const TitleContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
 const Title = styled.h1``;
-
-const AddButton = styled.button`
-  width: 5rem;
-  border: none;
-  padding: 0.3rem;
-  background-color: teal;
-  border-radius: 0.3rem;
-  cursor: pointer;
-  color: white;
-  font-size: 1rem;
-`;
 
 const ContentContainer = styled.div`
   display: flex;
   margin-top: 1.25rem;
 `;
 
-const Show = styled.div`
+const Card = styled.div`
   flex: 1;
-  padding: 1.25rem;
+  padding: 2rem;
   -webkit-box-shadow: 0px 0px 1rem -0.5rem rgba(0, 0, 0, 0.75);
   box-shadow: 0px 0px 1rem -0.5rem rgba(0, 0, 0, 0.75);
 `;
 
 const Update = styled.div`
   flex: 2;
-  padding: 1.25rem;
+  padding: 2rem;
   -webkit-box-shadow: 0px 0px 1rem -0.5rem rgba(0, 0, 0, 0.75);
   box-shadow: 0px 0px 1rem -0.5rem rgba(0, 0, 0, 0.75);
   margin-left: 1.25rem;
 `;
 
-const ShowTop = styled.div`
+const CardHeader = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const ShowImg = styled.img`
+const CardImg = styled.img`
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
   object-fit: cover;
 `;
 
-const ShowTopTitle = styled.div`
+const CardTopTitle = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 1.25rem;
 `;
 
-const ShowUsername = styled.span`
+const CardUsername = styled.span`
   font-weight: 600;
 `;
 
-const ShowUserTitle = styled.span`
+const CardUserTitle = styled.span`
   font-weight: 300;
 `;
 
-const ShowBottom = styled.div`
-  margin-top: 1.25rem;
-`;
-
-const ShowTitle = styled.span`
+const CardTitle = styled.h3`
+  margin-top: 2rem;
   font-size: 1rem;
   font-weight: 600;
   color: rgb(175, 170, 170);
 `;
 
-const ShowInfo = styled.div`
+const CardInfo = styled.div`
   display: flex;
   align-items: center;
-  margin: 1.25rem 0;
+  margin: 0.5rem 0;
   color: #444;
 `;
 
-const ShowInfoTitle = styled.span`
+const CardInfoTitle = styled.span`
   margin-left: 0.5rem;
 `;
 
@@ -132,6 +111,7 @@ const UpdateInput = styled.input`
 `;
 
 const UpdateRight = styled.div`
+  margin-right: 5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -139,18 +119,20 @@ const UpdateRight = styled.div`
 
 const UpdateUpload = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 1rem;
 `;
 
 const UpdateImg = styled.img`
-  width: 6rem;
-  height: 6rem;
+  width: 10rem;
+  height: 10rem;
   border-radius: 0.5rem;
   object-fit: cover;
-  margin-right: 1.25rem;
 `;
 
-const UpdateIcon = styled(Publish)`
+const UpdateIcon = styled(ImageSearchIcon)`
   cursor: pointer;
 `;
 
@@ -159,57 +141,56 @@ const UpdateButton = styled.button`
   border: none;
   padding: 0.3rem;
   cursor: pointer;
-  background-color: darkblue;
+  background-color: var(--clr-2);
   color: white;
   font-weight: 600;
+  font-size: 1rem;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: var(--clr-1);
+  }
 `;
 
 function UserPage() {
   return (
     <Container>
-      <TitleContainer>
-        <Title>Edit User</Title>
-        <Link to="/newUser">
-          <AddButton>Create</AddButton>
-        </Link>
-      </TitleContainer>
+      <Title>Edit User</Title>
       <ContentContainer>
-        <Show>
-          <ShowTop>
-            <ShowImg
+        <Card>
+          <CardHeader>
+            <CardImg
               src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
               alt=""
             />
-            <ShowTopTitle>
-              <ShowUsername>Anna Becker</ShowUsername>
-              <ShowUserTitle>Software Engineer</ShowUserTitle>
-            </ShowTopTitle>
-          </ShowTop>
-          <ShowBottom>
-            <ShowTitle>Account Details</ShowTitle>
-            <ShowInfo>
-              <PermIdentity className="userShowIcon" />
-              <ShowInfoTitle>annabeck99</ShowInfoTitle>
-            </ShowInfo>
-            <ShowInfo>
-              <CalendarToday className="userShowIcon" />
-              <ShowInfoTitle>10.12.1999</ShowInfoTitle>
-            </ShowInfo>
-            <ShowTitle>Contact Details</ShowTitle>
-            <ShowInfo>
-              <PhoneAndroid className="userShowIcon" />
-              <ShowInfoTitle>+1 123 456 67</ShowInfoTitle>
-            </ShowInfo>
-            <ShowInfo>
-              <MailOutline className="userShowIcon" />
-              <ShowInfoTitle>annabeck99@gmail.com</ShowInfoTitle>
-            </ShowInfo>
-            <ShowInfo>
-              <LocationSearching className="userShowIcon" />
-              <ShowInfoTitle>New York | USA</ShowInfoTitle>
-            </ShowInfo>
-          </ShowBottom>
-        </Show>
+            <CardTopTitle>
+              <CardUsername>Anna Becker</CardUsername>
+              <CardUserTitle>Software Engineer</CardUserTitle>
+            </CardTopTitle>
+          </CardHeader>
+          <CardTitle>Account Details</CardTitle>
+          <CardInfo>
+            <PermIdentity />
+            <CardInfoTitle>annabeck99</CardInfoTitle>
+          </CardInfo>
+          <CardInfo>
+            <CalendarToday />
+            <CardInfoTitle>10.12.1999</CardInfoTitle>
+          </CardInfo>
+          <CardTitle>Contact Details</CardTitle>
+          <CardInfo>
+            <PhoneAndroid />
+            <CardInfoTitle>+1 123 456 67</CardInfoTitle>
+          </CardInfo>
+          <CardInfo>
+            <MailOutline />
+            <CardInfoTitle>annabeck99@gmail.com</CardInfoTitle>
+          </CardInfo>
+          <CardInfo>
+            <LocationSearching />
+            <CardInfoTitle>New York | USA</CardInfoTitle>
+          </CardInfo>
+        </Card>
         <Update>
           <UpdateTitle>Edit</UpdateTitle>
           <UpdateForm>

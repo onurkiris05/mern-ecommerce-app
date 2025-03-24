@@ -6,7 +6,16 @@ import { Link } from "react-router-dom";
 import { productRows } from "../dummyData";
 
 const Container = styled.div`
-  flex: 4;
+  flex: 1;
+`;
+
+const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Title = styled.h1`
+  margin: 0 1rem;
 `;
 
 const Item = styled.div`
@@ -26,7 +35,7 @@ const Edit = styled.button`
   border: none;
   border-radius: 0.5rem;
   padding: 0.5rem;
-  background-color: #3bb077;
+  background-color: var(--clr-2);
   color: white;
   cursor: pointer;
   margin-right: 1.25rem;
@@ -35,6 +44,28 @@ const Edit = styled.button`
 const Delete = styled(DeleteOutline)`
   color: red;
   cursor: pointer;
+`;
+
+const AddButton = styled.button`
+  border: none;
+  padding: 0.4rem 0.75rem;
+  margin: 1rem;
+  background-color: var(--clr-3);
+  border-radius: 0.3rem;
+  cursor: pointer;
+  color: white;
+  font-size: 1rem;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: var(--clr-1);
+  }
+`;
+
+const ActionWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 function ProductListPage() {
@@ -76,12 +107,12 @@ function ProductListPage() {
       width: 150,
       renderCell: (params: any) => {
         return (
-          <>
+          <ActionWrapper>
             <Link to={"/product/" + params.row.id}>
               <Edit>Edit</Edit>
             </Link>
             <Delete onClick={() => handleDelete(params.row.id)} />
-          </>
+          </ActionWrapper>
         );
       },
     },
@@ -89,6 +120,12 @@ function ProductListPage() {
 
   return (
     <Container>
+      <TitleWrapper>
+        <Title>Products</Title>
+        <Link to="/newProduct">
+          <AddButton>Create Product</AddButton>
+        </Link>
+      </TitleWrapper>
       <DataGrid
         rows={data}
         disableRowSelectionOnClick

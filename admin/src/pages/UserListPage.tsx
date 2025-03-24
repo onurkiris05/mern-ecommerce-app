@@ -6,7 +6,16 @@ import { Link } from "react-router-dom";
 import { userRows } from "../dummyData";
 
 const Container = styled.div`
-  flex: 4;
+  flex: 1;
+`;
+
+const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Title = styled.h1`
+  margin: 0 1rem;
 `;
 
 const User = styled.div`
@@ -22,19 +31,46 @@ const Img = styled.img`
   margin-right: 0.5rem;
 `;
 
+const ActionWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+`;
+
 const Edit = styled.button`
   border: none;
   border-radius: 0.5rem;
   padding: 0.3rem 0.5rem;
-  background-color: #3bb077;
+  background-color: var(--clr-2);
   color: white;
   cursor: pointer;
-  margin-right: 1.25rem;
+  margin-right: 1rem;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: var(--clr-1);
+  }
 `;
 
 const Delete = styled(DeleteOutline)`
   color: red;
   cursor: pointer;
+`;
+
+const AddButton = styled.button`
+  border: none;
+  padding: 0.4rem 0.75rem;
+  margin: 1rem;
+  background-color: var(--clr-3);
+  border-radius: 0.3rem;
+  cursor: pointer;
+  color: white;
+  font-size: 1rem;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: var(--clr-1);
+  }
 `;
 
 function UserListPage() {
@@ -76,12 +112,12 @@ function UserListPage() {
       width: 150,
       renderCell: (params: any) => {
         return (
-          <>
+          <ActionWrapper>
             <Link to={"/user/" + params.row.id}>
               <Edit>Edit</Edit>
             </Link>
             <Delete onClick={() => handleDelete(params.row.id)} />
-          </>
+          </ActionWrapper>
         );
       },
     },
@@ -89,6 +125,12 @@ function UserListPage() {
 
   return (
     <Container>
+      <TitleWrapper>
+        <Title>Users</Title>
+        <Link to="/newUser">
+          <AddButton>Create User</AddButton>
+        </Link>
+      </TitleWrapper>
       <DataGrid
         rows={data}
         disableRowSelectionOnClick

@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { NotificationsNone, Language, Settings } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
-  height: 3rem;
+  height: 5vh;
   background-color: white;
   position: sticky;
   top: 0;
@@ -18,16 +19,11 @@ const Wrapper = styled.div`
   justify-content: space-between;
 `;
 
-const Logo = styled.span`
-  font-weight: bold;
-  font-size: 2rem;
-  color: darkblue;
-  cursor: pointer;
-`;
-
 const Right = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding-top: 0.75rem;
 `;
 
 const Left = styled.div`
@@ -36,6 +32,9 @@ const Left = styled.div`
 `;
 
 const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   cursor: pointer;
   margin-right: 0.5rem;
@@ -64,12 +63,34 @@ const Avatar = styled.img`
   cursor: pointer;
 `;
 
+const LogoFirst = styled.h1`
+  font-size: 3rem;
+  font-weight: 600;
+  font-family: var(--ff-secondary);
+  color: var(--clr-3);
+`;
+
+const LogoLast = styled.span`
+  font-size: 3rem;
+  font-weight: 200;
+  color: var(--clr-5);
+`;
+
+const StyledLink = styled(Link)`
+  all: unset;
+  display: flex;
+  cursor: pointer;
+`;
+
 function Topbar() {
   return (
     <Container>
       <Wrapper>
         <Left>
-          <Logo>trendNEST</Logo>
+          <StyledLink to="/">
+            <LogoFirst>trend</LogoFirst>
+            <LogoLast>NEST</LogoLast>
+          </StyledLink>
         </Left>
         <Right>
           <IconContainer>

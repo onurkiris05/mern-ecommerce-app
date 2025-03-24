@@ -15,13 +15,10 @@ import {
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { ReactElement } from "react";
+import HandymanIcon from "@mui/icons-material/Handyman";
 
 const Container = styled.div`
-  flex: 1;
-  height: calc(100vh - 3rem);
   background-color: rgb(251, 251, 255);
-  position: sticky;
-  top: 3rem;
 `;
 
 const Wrapper = styled.div`
@@ -75,8 +72,8 @@ const sidebarData: SidebarItemProps[] = [
     title: "Dashboard",
     items: [
       { name: "Home", icon: <LineStyle />, link: "/", active: true },
-      { name: "Analytics", icon: <Timeline /> },
-      { name: "Sales", icon: <TrendingUp /> },
+      { name: "Analytics", icon: <HandymanIcon /> }, //<Timeline />
+      { name: "Sales", icon: <HandymanIcon /> }, //<TrendingUp />
     ],
   },
   {
@@ -84,24 +81,24 @@ const sidebarData: SidebarItemProps[] = [
     items: [
       { name: "Users", icon: <PermIdentity />, link: "/users" },
       { name: "Products", icon: <Storefront />, link: "/products" },
-      { name: "Transactions", icon: <AttachMoney /> },
-      { name: "Reports", icon: <BarChart /> },
+      { name: "Transactions", icon: <HandymanIcon /> }, //<AttachMoney />
+      { name: "Reports", icon: <HandymanIcon /> }, //<BarChart />
     ],
   },
   {
     title: "Notifications",
     items: [
-      { name: "Mail", icon: <MailOutline /> },
-      { name: "Feedback", icon: <DynamicFeed /> },
-      { name: "Messages", icon: <ChatBubbleOutline /> },
+      { name: "Mail", icon: <HandymanIcon /> }, //<MailOutline />
+      { name: "Feedback", icon: <HandymanIcon /> }, //<DynamicFeed />
+      { name: "Messages", icon: <HandymanIcon /> }, //<ChatBubbleOutline />
     ],
   },
   {
     title: "Staff",
     items: [
-      { name: "Manage", icon: <WorkOutline /> },
-      { name: "Analytics", icon: <Timeline /> },
-      { name: "Reports", icon: <Report /> },
+      { name: "Manage", icon: <HandymanIcon /> }, //<WorkOutline />
+      { name: "Analytics", icon: <HandymanIcon /> }, //<Timeline />
+      { name: "Reports", icon: <HandymanIcon /> }, //<Report />
     ],
   },
 ];

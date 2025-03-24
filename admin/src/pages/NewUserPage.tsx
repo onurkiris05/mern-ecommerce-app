@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const Container = styled.div`
-  flex: 4;
+  flex: 1;
 `;
 
 const Title = styled.h1``;
