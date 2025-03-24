@@ -14,7 +14,10 @@ const Title = styled.h3`
 
 const Table = styled.table`
   width: 100%;
-  border-spacing: 1.25rem;
+`;
+
+const Row = styled.tr`
+  height: 3rem;
 `;
 
 const Th = styled.th`
@@ -68,7 +71,7 @@ function WidgetLg() {
         </thead>
         <tbody>
           {transactions.map((transaction, i) => (
-            <tr key={i}>
+            <Row key={i}>
               <User>
                 <Img src={transaction.image} alt="" />
                 <span>{transaction.customer}</span>
@@ -78,7 +81,7 @@ function WidgetLg() {
               <td>
                 <Button type={transaction.status}>{transaction.status}</Button>
               </td>
-            </tr>
+            </Row>
           ))}
         </tbody>
       </Table>

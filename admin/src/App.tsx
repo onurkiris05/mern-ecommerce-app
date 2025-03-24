@@ -10,28 +10,40 @@ import ProductListPage from "./pages/ProductListPage";
 import ProductPage from "./pages/ProductPage";
 import NewProductPage from "./pages/NewProductPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import { useSelector } from "react-redux";
+import LoginPage from "./pages/LoginPage";
 
 const Container = styled.div`
   display: flex;
 `;
 
 function App() {
+  const user = useSelector((state: any) => state.user.currentUser);
+
   return (
     <Router>
-      <Topbar />
-      <Container>
-        <Sidebar />
+      {!user ? (
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/users" element={<UserListPage />} />
-          <Route path="/user/:userId" element={<UserPage />} />
-          <Route path="/newUser" element={<NewUserPage />} />
-          <Route path="/products" element={<ProductListPage />} />
-          <Route path="/product/:productId" element={<ProductPage />} />
-          <Route path="/newproduct" element={<NewProductPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="*" element={<LoginPage />} />
         </Routes>
-      </Container>
+      ) : (
+        <>
+          <Topbar />
+          <Container>
+            <Sidebar />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/users" element={<UserListPage />} />
+              <Route path="/user/:userId" element={<UserPage />} />
+              <Route path="/newUser" element={<NewUserPage />} />
+              <Route path="/products" element={<ProductListPage />} />
+              <Route path="/product/:productId" element={<ProductPage />} />
+              <Route path="/newproduct" element={<NewProductPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Container>
+        </>
+      )}
     </Router>
   );
 }

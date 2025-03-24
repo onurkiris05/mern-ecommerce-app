@@ -1,12 +1,20 @@
 import styled from "styled-components";
 import {
   CalendarToday,
-  LocationSearching,
   MailOutline,
   PermIdentity,
-  PhoneAndroid,
+  CheckCircle,
+  Cancel,
+  ManageAccounts,
 } from "@mui/icons-material";
-import ImageSearchIcon from "@mui/icons-material/ImageSearch";
+import { useParams } from "react-router-dom";
+import * as UserApi from "../api/users";
+import { PublicUser } from "../models/user";
+import { useEffect, useState } from "react";
+import { formatDate } from "../utils";
+import { Alert, Form } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { UnauthorizedError } from "../errors/http_errors";
 
 const Container = styled.div`
   flex: 1;
@@ -35,116 +43,46 @@ const Update = styled.div`
   margin-left: 1.25rem;
 `;
 
-const CardHeader = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const CardImg = styled.img`
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  object-fit: cover;
-`;
-
-const CardTopTitle = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 1.25rem;
-`;
-
-const CardUsername = styled.span`
-  font-weight: 600;
-`;
-
-const CardUserTitle = styled.span`
-  font-weight: 300;
-`;
-
 const CardTitle = styled.h3`
-  margin-top: 2rem;
-  font-size: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: rgb(175, 170, 170);
 `;
 
 const CardInfo = styled.div`
   display: flex;
   align-items: center;
-  margin: 0.5rem 0;
+  justify-content: space-between;
+  margin: 0.75rem 0;
   color: #444;
 `;
 
-const CardInfoTitle = styled.span`
+const CardInfoTitle = styled.p`
+  margin: 0;
+  font-weight: 500;
+  color: rgb(175, 170, 170);
+`;
+
+const CardInfoDesc = styled.p`
+  margin: 0;
   margin-left: 0.5rem;
+  color: var(--clr-1);
 `;
 
-const UpdateTitle = styled.span`
-  font-size: 1.5rem;
+const UpdateTitle = styled.p`
+  font-size: 1.25rem;
   font-weight: 600;
+  margin-bottom: 1rem;
 `;
 
-const UpdateForm = styled.form`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.25rem;
-`;
-
-const UpdateLeft = styled.div``;
-
-const UpdateItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 0.5rem;
-`;
-
-const UpdateLabel = styled.label`
-  margin-bottom: 0.3rem;
+const Button = styled.button`
   font-size: 1rem;
-`;
-
-const UpdateInput = styled.input`
-  border: none;
-  width: 15rem;
-  height: 2rem;
-  border-bottom: 1px solid gray;
-`;
-
-const UpdateRight = styled.div`
-  margin-right: 5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const UpdateUpload = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-`;
-
-const UpdateImg = styled.img`
-  width: 10rem;
-  height: 10rem;
-  border-radius: 0.5rem;
-  object-fit: cover;
-`;
-
-const UpdateIcon = styled(ImageSearchIcon)`
-  cursor: pointer;
-`;
-
-const UpdateButton = styled.button`
-  border-radius: 0.3rem;
-  border: none;
-  padding: 0.3rem;
-  cursor: pointer;
+  width: 5rem;
   background-color: var(--clr-2);
-  color: white;
-  font-weight: 600;
-  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
   transition: 0.2s;
 
   &:hover {
@@ -153,83 +91,134 @@ const UpdateButton = styled.button`
 `;
 
 function UserPage() {
+  const { userId } = useParams();
+  const [user, setUser] = useState<PublicUser>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<UserApi.UserUpdateInput>({
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+  });
+  const [errorText, setErrorText] = useState<string | null>(null);
+
+  async function onSubmit(input: UserApi.UserUpdateInput) {
+    try {
+      const userResponse = await UserApi.updateUser(userId!, input);
+      setUser(userResponse);
+    } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        setErrorText(error.message);
+      } else {
+        alert(error);
+      }
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    const getUser = async (id: string) => {
+      try {
+        const response = await UserApi.getUser(id);
+        setUser(response);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+    userId && getUser(userId);
+  }, [userId]);
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        username: user.username,
+        email: user.email,
+        password: "",
+      });
+    }
+  }, [user, reset]);
+
   return (
     <Container>
       <Title>Edit User</Title>
       <ContentContainer>
         <Card>
-          <CardHeader>
-            <CardImg
-              src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-              alt=""
-            />
-            <CardTopTitle>
-              <CardUsername>Anna Becker</CardUsername>
-              <CardUserTitle>Software Engineer</CardUserTitle>
-            </CardTopTitle>
-          </CardHeader>
           <CardTitle>Account Details</CardTitle>
           <CardInfo>
-            <PermIdentity />
-            <CardInfoTitle>annabeck99</CardInfoTitle>
+            <CardInfoTitle>
+              <PermIdentity /> Username:
+            </CardInfoTitle>
+            <CardInfoDesc> {user?.username}</CardInfoDesc>
           </CardInfo>
           <CardInfo>
-            <CalendarToday />
-            <CardInfoTitle>10.12.1999</CardInfoTitle>
-          </CardInfo>
-          <CardTitle>Contact Details</CardTitle>
-          <CardInfo>
-            <PhoneAndroid />
-            <CardInfoTitle>+1 123 456 67</CardInfoTitle>
+            <CardInfoTitle>
+              <MailOutline /> Email:
+            </CardInfoTitle>
+            <CardInfoDesc> {user?.email}</CardInfoDesc>
           </CardInfo>
           <CardInfo>
-            <MailOutline />
-            <CardInfoTitle>annabeck99@gmail.com</CardInfoTitle>
+            <CardInfoTitle>
+              <ManageAccounts /> IsAdmin:
+            </CardInfoTitle>
+            <CardInfoDesc> {user?.isAdmin ? <CheckCircle /> : <Cancel />}</CardInfoDesc>
           </CardInfo>
           <CardInfo>
-            <LocationSearching />
-            <CardInfoTitle>New York | USA</CardInfoTitle>
+            <CardInfoTitle>
+              <CalendarToday /> Created At:
+            </CardInfoTitle>
+            <CardInfoDesc> {user && formatDate(user.createdAt)}</CardInfoDesc>
+          </CardInfo>
+          <CardInfo>
+            <CardInfoTitle>
+              <CalendarToday /> Updated At:
+            </CardInfoTitle>
+            <CardInfoDesc> {user && formatDate(user.updatedAt)}</CardInfoDesc>
           </CardInfo>
         </Card>
         <Update>
           <UpdateTitle>Edit</UpdateTitle>
-          <UpdateForm>
-            <UpdateLeft>
-              <UpdateItem>
-                <UpdateLabel>Username</UpdateLabel>
-                <UpdateInput type="text" placeholder="annabeck99" />
-              </UpdateItem>
-              <UpdateItem>
-                <UpdateLabel>Full Name</UpdateLabel>
-                <UpdateInput type="text" placeholder="Anna Becker" />
-              </UpdateItem>
-              <UpdateItem>
-                <UpdateLabel>Email</UpdateLabel>
-                <UpdateInput type="text" placeholder="annabeck99@gmail.com" />
-              </UpdateItem>
-              <UpdateItem>
-                <UpdateLabel>Phone</UpdateLabel>
-                <UpdateInput type="text" placeholder="+1 123 456 67" />
-              </UpdateItem>
-              <UpdateItem>
-                <UpdateLabel>Address</UpdateLabel>
-                <UpdateInput type="text" placeholder="New York | USA" />
-              </UpdateItem>
-            </UpdateLeft>
-            <UpdateRight>
-              <UpdateUpload>
-                <UpdateImg
-                  src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-                  alt=""
-                />
-                <label htmlFor="file">
-                  <UpdateIcon />
-                </label>
-                <input type="file" id="file" style={{ display: "none" }} />
-              </UpdateUpload>
-              <UpdateButton>Update</UpdateButton>
-            </UpdateRight>
-          </UpdateForm>
+          <Form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
+            {errorText && <Alert variant="danger">{errorText}</Alert>}
+            <Form.Group className="mb-4">
+              <Form.Control
+                type="text"
+                placeholder="Username"
+                isInvalid={!!errors.username}
+                {...register("username")}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.username?.message}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-4">
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                isInvalid={!!errors.email}
+                {...register("email")}
+              />
+              <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-4">
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                isInvalid={!!errors.password}
+                {...register("password")}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.password?.message}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Button type="submit" disabled={isSubmitting}>
+              Edit
+            </Button>
+          </Form>
         </Update>
       </ContentContainer>
     </Container>

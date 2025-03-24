@@ -29,9 +29,7 @@ export const getStats: RequestHandler = async (req, res) => {
 export const getAllUsers: RequestHandler = async (req, res) => {
   const query = req.query.new;
 
-  const users = query
-    ? await User.find().sort({ _id: -1 }).limit(5).select("+email")
-    : await User.find().select("+email");
+  const users = query ? await User.find().sort({ _id: -1 }).limit(5) : await User.find();
   res.status(200).json(users);
 };
 
@@ -42,7 +40,7 @@ export const getUser: RequestHandler<{ id: string }> = async (req, res) => {
     throw createHttpError(400, "Invalid User Id");
   }
 
-  const user = await User.findById(id).select("+email");
+  const user = await User.findById(id);
 
   if (!user) {
     throw createHttpError(404, "User not found");

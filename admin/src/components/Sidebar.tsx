@@ -40,13 +40,13 @@ const List = styled.ul`
   padding: 0.5rem;
 `;
 
-const ListItem = styled.li<{ active?: boolean }>`
+const ListItem = styled.li<{ $active?: boolean }>`
   padding: 0.5rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   border-radius: 0.5rem;
-  background-color: ${(props) => (props.active ? "rgb(240, 240, 255)" : "transparent")};
+  background-color: ${(props) => (props.$active ? "rgb(240, 240, 255)" : "transparent")};
   &:hover {
     background-color: rgb(240, 240, 255);
   }
@@ -113,7 +113,7 @@ function Sidebar() {
             <List>
               {section.items.map((item, i) => (
                 <Link to={item.link || "#"} key={i}>
-                  <ListItem active={item.active}>
+                  <ListItem $active={item.active}>
                     <Icon>{item.icon}</Icon>
                     {item.name}
                   </ListItem>

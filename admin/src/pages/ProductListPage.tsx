@@ -32,6 +32,7 @@ const Img = styled.img`
 `;
 
 const Edit = styled.button`
+  font-size: 1rem;
   border: none;
   border-radius: 0.5rem;
   padding: 0.5rem;
@@ -135,7 +136,7 @@ function ProductListPage() {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 8,
+              pageSize: 10,
               page: 0,
             },
           },

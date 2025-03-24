@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
-import { DeleteOutline } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { userRows } from "../dummyData";
+import { PublicUser } from "../models/user";
+import * as UsersApi from "../api/users";
+import { DeleteOutline } from "@mui/icons-material";
 
 const Container = styled.div`
   flex: 1;
@@ -18,19 +19,6 @@ const Title = styled.h1`
   margin: 0 1rem;
 `;
 
-const User = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Img = styled.img`
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 0.5rem;
-`;
-
 const ActionWrapper = styled.div`
   height: 100%;
   display: flex;
@@ -39,13 +27,13 @@ const ActionWrapper = styled.div`
 
 const Edit = styled.button`
   border: none;
-  border-radius: 0.5rem;
   padding: 0.3rem 0.5rem;
   background-color: var(--clr-2);
   color: white;
   cursor: pointer;
   margin-right: 1rem;
   transition: 0.2s;
+  font-size: 1rem;
 
   &:hover {
     background-color: var(--clr-1);
@@ -73,38 +61,51 @@ const AddButton = styled.button`
   }
 `;
 
-function UserListPage() {
-  const [data, setData] = useState(userRows);
+const StyledLink = styled(Link)`
+  all: unset;
+  display: flex;
+  cursor: pointer;
+`;
 
-  const handleDelete = (id: number) => {
-    setData(data.filter((item) => item.id !== id));
+function UserListPage() {
+  const [users, setUsers] = useState<PublicUser[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const usersResponse = await UsersApi.getAllUsers();
+        setUsers(usersResponse);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await UsersApi.deleteUser(id);
+      setUsers(users.filter((user) => user._id !== id));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
+    { field: "_id", headerName: "ID", width: 90 },
     {
-      field: "user",
-      headerName: "User",
+      field: "username",
+      headerName: "Username",
       width: 200,
-      renderCell: (params: any) => {
-        return (
-          <User>
-            <Img src={params.row.avatar} alt="" />
-            {params.row.username}
-          </User>
-        );
-      },
     },
     { field: "email", headerName: "Email", width: 200 },
     {
-      field: "status",
-      headerName: "Status",
+      field: "isAdmin",
+      headerName: "Is Admin",
       width: 120,
-    },
-    {
-      field: "transaction",
-      headerName: "Transaction Volume",
-      width: 160,
+      renderCell: (params: any) => {
+        return <>{params.row.isAdmin ? "Yes" : "No"}</>;
+      },
     },
     {
       field: "action",
@@ -113,10 +114,10 @@ function UserListPage() {
       renderCell: (params: any) => {
         return (
           <ActionWrapper>
-            <Link to={"/user/" + params.row.id}>
+            <StyledLink to={"/user/" + params.row._id}>
               <Edit>Edit</Edit>
-            </Link>
-            <Delete onClick={() => handleDelete(params.row.id)} />
+            </StyledLink>
+            <Delete onClick={() => handleDelete(params.row._id)} />
           </ActionWrapper>
         );
       },
@@ -132,7 +133,8 @@ function UserListPage() {
         </Link>
       </TitleWrapper>
       <DataGrid
-        rows={data}
+        rows={users}
+        getRowId={(row) => row._id}
         disableRowSelectionOnClick
         columns={columns}
         checkboxSelection
@@ -140,7 +142,7 @@ function UserListPage() {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 8,
+              pageSize: 10,
               page: 0,
             },
           },
