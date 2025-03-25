@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
-import { DeleteOutline } from "@mui/icons-material";
+import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { Product } from "../models/product";
 import * as ProductApi from "../api/products";
 import { formatDate } from "../utils";
+import { Button } from "../components/Button";
+import CustomModal from "../components/CustomModal";
 
 const Container = styled.div`
   flex: 1;
@@ -14,6 +16,7 @@ const Container = styled.div`
 const TitleWrapper = styled.div`
   display: flex;
   align-items: center;
+  padding: 2rem 0 1rem;
 `;
 
 const Title = styled.h1`
@@ -34,42 +37,11 @@ const Img = styled.img`
   margin-right: 0.5rem;
 `;
 
-const Edit = styled.button`
-  font-size: 1rem;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  background-color: var(--clr-2);
-  color: white;
-  cursor: pointer;
-  margin-right: 1.25rem;
-`;
-
-const Delete = styled(DeleteOutline)`
-  color: red;
-  cursor: pointer;
-`;
-
-const AddButton = styled.button`
-  border: none;
-  padding: 0.4rem 0.75rem;
-  margin: 1rem;
-  background-color: var(--clr-3);
-  border-radius: 0.3rem;
-  cursor: pointer;
-  color: white;
-  font-size: 1rem;
-  transition: 0.2s;
-
-  &:hover {
-    background-color: var(--clr-1);
-  }
-`;
-
 const ActionWrapper = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 `;
 
 const Color = styled.div<{ color: string }>`
@@ -82,6 +54,7 @@ const Color = styled.div<{ color: string }>`
 
 function ProductListPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -99,6 +72,7 @@ function ProductListPage() {
     try {
       await ProductApi.deleteProduct(id);
       setProducts(products.filter((product) => product._id !== id));
+      setShowModal(true);
     } catch (error) {
       console.error("Error deleting product:", error);
     }
@@ -190,9 +164,13 @@ function ProductListPage() {
         return (
           <ActionWrapper>
             <Link to={"/product/" + params.row._id}>
-              <Edit>Edit</Edit>
+              <Button.Icon>
+                <EditOutlined />
+              </Button.Icon>
             </Link>
-            <Delete onClick={() => handleDelete(params.row._id)} />
+            <Button.Icon color="red" onClick={() => handleDelete(params.row._id)}>
+              <DeleteOutline />
+            </Button.Icon>
           </ActionWrapper>
         );
       },
@@ -204,7 +182,7 @@ function ProductListPage() {
       <TitleWrapper>
         <Title>Products</Title>
         <Link to="/newProduct">
-          <AddButton>Create Product</AddButton>
+          <Button.Primary size="1rem">Create Product</Button.Primary>
         </Link>
       </TitleWrapper>
       <DataGrid
@@ -222,6 +200,13 @@ function ProductListPage() {
             },
           },
         }}
+      />
+      <CustomModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        variant="success"
+        title="Success"
+        message="Product deleted successfully!"
       />
     </Container>
   );

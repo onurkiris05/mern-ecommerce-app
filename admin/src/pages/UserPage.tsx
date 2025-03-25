@@ -15,6 +15,8 @@ import { formatDate } from "../utils";
 import { Alert, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { UnauthorizedError } from "../errors/http_errors";
+import CustomModal from "../components/CustomModal";
+import { Button } from "../components/Button";
 
 const Container = styled.div`
   flex: 1;
@@ -69,36 +71,26 @@ const CardInfoDesc = styled.p`
   color: var(--clr-1);
 `;
 
-const UpdateTitle = styled.p`
-  font-size: 1.25rem;
+const UpdateTitle = styled.h2`
   font-weight: 600;
   margin-bottom: 1rem;
 `;
 
-const Button = styled.button`
-  font-size: 1rem;
-  width: 5rem;
-  background-color: var(--clr-2);
-  border-radius: 0.5rem;
-  border: none;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: 0.2s;
-
-  &:hover {
-    background-color: var(--clr-1);
-  }
+const ButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 function UserPage() {
   const { userId } = useParams();
   const [user, setUser] = useState<PublicUser>();
+  const [showModal, setShowModal] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
     reset,
-  } = useForm<UserApi.UserUpdateInput>({
+  } = useForm<UserApi.UserInput>({
     defaultValues: {
       username: "",
       email: "",
@@ -107,10 +99,11 @@ function UserPage() {
   });
   const [errorText, setErrorText] = useState<string | null>(null);
 
-  async function onSubmit(input: UserApi.UserUpdateInput) {
+  async function onSubmit(input: UserApi.UserInput) {
     try {
       const userResponse = await UserApi.updateUser(userId!, input);
       setUser(userResponse);
+      setShowModal(true);
     } catch (error) {
       if (error instanceof UnauthorizedError) {
         setErrorText(error.message);
@@ -185,20 +178,32 @@ function UserPage() {
           <Form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
             {errorText && <Alert variant="danger">{errorText}</Alert>}
             <Form.Group className="mb-4">
+              <Form.Label className="me-4">Username: </Form.Label>
               <Form.Control type="text" placeholder="Username" {...register("username")} />
             </Form.Group>
             <Form.Group className="mb-4">
+              <Form.Label className="me-4">Email: </Form.Label>
               <Form.Control type="email" placeholder="Email" {...register("email")} />
             </Form.Group>
             <Form.Group className="mb-4">
+              <Form.Label className="me-4">Password: </Form.Label>
               <Form.Control type="password" placeholder="Password" {...register("password")} />
             </Form.Group>
-            <Button type="submit" disabled={isSubmitting}>
-              Edit
-            </Button>
+            <ButtonWrapper>
+              <Button.Primary size="1rem" type="submit" disabled={isSubmitting}>
+                Update
+              </Button.Primary>
+            </ButtonWrapper>
           </Form>
         </Update>
       </ContentContainer>
+      <CustomModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        variant="success"
+        title="Success"
+        message="User updated successfully!"
+      />
     </Container>
   );
 }

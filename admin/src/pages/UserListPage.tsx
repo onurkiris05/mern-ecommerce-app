@@ -4,8 +4,10 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { PublicUser } from "../models/user";
 import * as UsersApi from "../api/users";
-import { DeleteOutline } from "@mui/icons-material";
+import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { formatDate } from "../utils";
+import { Button } from "../components/Button";
+import CustomModal from "../components/CustomModal";
 
 const Container = styled.div`
   flex: 1;
@@ -14,6 +16,7 @@ const Container = styled.div`
 const TitleWrapper = styled.div`
   display: flex;
   align-items: center;
+  padding: 2rem 0 1rem;
 `;
 
 const Title = styled.h1`
@@ -24,42 +27,7 @@ const ActionWrapper = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
-`;
-
-const Edit = styled.button`
-  border: none;
-  padding: 0.3rem 0.5rem;
-  background-color: var(--clr-2);
-  color: white;
-  cursor: pointer;
-  margin-right: 1rem;
-  transition: 0.2s;
-  font-size: 1rem;
-
-  &:hover {
-    background-color: var(--clr-1);
-  }
-`;
-
-const Delete = styled(DeleteOutline)`
-  color: red;
-  cursor: pointer;
-`;
-
-const AddButton = styled.button`
-  border: none;
-  padding: 0.4rem 0.75rem;
-  margin: 1rem;
-  background-color: var(--clr-3);
-  border-radius: 0.3rem;
-  cursor: pointer;
-  color: white;
-  font-size: 1rem;
-  transition: 0.2s;
-
-  &:hover {
-    background-color: var(--clr-1);
-  }
+  gap: 0.5rem;
 `;
 
 const StyledLink = styled(Link)`
@@ -70,6 +38,7 @@ const StyledLink = styled(Link)`
 
 function UserListPage() {
   const [users, setUsers] = useState<PublicUser[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -87,6 +56,7 @@ function UserListPage() {
     try {
       await UsersApi.deleteUser(id);
       setUsers(users.filter((user) => user._id !== id));
+      setShowModal(true);
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -132,9 +102,13 @@ function UserListPage() {
         return (
           <ActionWrapper>
             <StyledLink to={"/user/" + params.row._id}>
-              <Edit>Edit</Edit>
+              <Button.Icon>
+                <EditOutlined />
+              </Button.Icon>
             </StyledLink>
-            <Delete onClick={() => handleDelete(params.row._id)} />
+            <Button.Icon color="red" onClick={() => handleDelete(params.row._id)}>
+              <DeleteOutline />
+            </Button.Icon>
           </ActionWrapper>
         );
       },
@@ -146,7 +120,7 @@ function UserListPage() {
       <TitleWrapper>
         <Title>Users</Title>
         <Link to="/newUser">
-          <AddButton>Create User</AddButton>
+          <Button.Primary size="1rem">Create User</Button.Primary>
         </Link>
       </TitleWrapper>
       <DataGrid
@@ -164,6 +138,13 @@ function UserListPage() {
             },
           },
         }}
+      />
+      <CustomModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        variant="success"
+        title="Success"
+        message="User deleted successfully!"
       />
     </Container>
   );

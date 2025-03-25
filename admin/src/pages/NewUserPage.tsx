@@ -1,116 +1,104 @@
+import { useState } from "react";
+import { Alert, Form } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import * as UserApi from "../api/users";
+import CustomModal from "../components/CustomModal";
+import { Button } from "../components/Button";
 
 const Container = styled.div`
   flex: 1;
 `;
 
-const Title = styled.h1``;
-
-const Form = styled.form`
-  display: flex;
-  flex-wrap: wrap;
+const Wrapper = styled.div`
+  width: clamp(15rem, 25%, 30rem);
+  margin: 2rem auto 0;
+  box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+  padding: 2rem 1rem;
 `;
 
-const Item = styled.div`
-  width: 25rem;
-  display: flex;
-  flex-direction: column;
-  margin-top: 0.5rem;
-  margin-right: 1.25rem;
-`;
-
-const Label = styled.label`
-  margin-bottom: 0.8rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: rgb(151, 150, 150);
-`;
-
-const Input = styled.input`
-  height: 1.25rem;
-  padding: 0.5rem;
-  border: 1px solid gray;
-  border-radius: 0.5rem;
-`;
-
-const GenderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 1rem;
-`;
-
-const GenderLabel = styled.label`
-  margin: 0.5rem;
-  font-size: 1.25rem;
-  color: #555;
-`;
-
-const Select = styled.select`
-  height: 2.5rem;
-  border-radius: 0.5rem;
-`;
-
-const Button = styled.button`
-  width: 12rem;
-  border: none;
-  background-color: darkblue;
-  color: white;
-  padding: 0.5rem;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  margin-top: 2rem;
-  cursor: pointer;
+const Title = styled.h1`
+  text-align: center;
+  margin-bottom: 2rem;
 `;
 
 function NewUserPage() {
+  const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState<UserApi.UserInput>();
+  const [errorText, setErrorText] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<UserApi.UserInput>();
+
+  async function onSubmit(input: UserApi.UserInput) {
+    try {
+      const userResponse = await UserApi.createUser(input);
+      setUser(userResponse);
+      setShowModal(true);
+      reset();
+    } catch (error: any) {
+      setErrorText(error.message);
+      console.error(error);
+    }
+  }
+
   return (
     <Container>
-      <Title>New User</Title>
-      <Form>
-        <Item>
-          <Label>Username</Label>
-          <Input type="text" placeholder="john" />
-        </Item>
-        <Item>
-          <Label>Full Name</Label>
-          <Input type="text" placeholder="John Smith" />
-        </Item>
-        <Item>
-          <Label>Email</Label>
-          <Input type="email" placeholder="john@gmail.com" />
-        </Item>
-        <Item>
-          <Label>Password</Label>
-          <Input type="password" placeholder="password" />
-        </Item>
-        <Item>
-          <Label>Phone</Label>
-          <Input type="text" placeholder="+1 123 456 78" />
-        </Item>
-        <Item>
-          <Label>Address</Label>
-          <Input type="text" placeholder="New York | USA" />
-        </Item>
-        <Item>
-          <Label>Gender</Label>
-          <GenderContainer>
-            <Input type="radio" name="gender" id="male" value="male" />
-            <GenderLabel htmlFor="male">Male</GenderLabel>
-            <Input type="radio" name="gender" id="female" value="female" />
-            <GenderLabel htmlFor="female">Female</GenderLabel>
-            <Input type="radio" name="gender" id="other" value="other" />
-            <GenderLabel htmlFor="other">Other</GenderLabel>
-          </GenderContainer>
-        </Item>
-        <Item>
-          <Label>Active</Label>
-          <Select name="active" id="active">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </Select>
-        </Item>
-        <Button type="submit">Create</Button>
-      </Form>
+      <Wrapper>
+        <Title>New User</Title>
+        <Form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
+          {errorText && <Alert variant="danger">{errorText}</Alert>}
+          <Form.Group className="mb-4">
+            <Form.Control
+              type="text"
+              placeholder="Username"
+              isInvalid={!!errors.username}
+              {...register("username", { required: "Required" })}
+            />
+            <Form.Control.Feedback type="invalid">{errors.username?.message}</Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group className="mb-4">
+            <Form.Control
+              type="email"
+              placeholder="Email"
+              isInvalid={!!errors.email}
+              {...register("email", { required: "Required" })}
+            />
+            <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group className="mb-4">
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              isInvalid={!!errors.password}
+              {...register("password", { required: "Required" })}
+            />
+            <Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>
+          </Form.Group>
+          <Button.Primary
+            size="1.25rem"
+            className="align-self-center"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            Create
+          </Button.Primary>
+        </Form>
+      </Wrapper>
+      <CustomModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        variant="success"
+        title="Success"
+        message={
+          <span>
+            User <strong>{user?.username}</strong> created successfully!
+          </span>
+        }
+      />
     </Container>
   );
 }

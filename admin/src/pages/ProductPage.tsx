@@ -10,6 +10,8 @@ import { useForm } from "react-hook-form";
 import { Alert, Form } from "react-bootstrap";
 import { UnauthorizedError } from "../errors/http_errors";
 import * as ConstantsApi from "../api/constants";
+import CustomModal from "../components/CustomModal";
+import { Button } from "../components/Button";
 
 const Container = styled.div`
   flex: 1;
@@ -95,24 +97,9 @@ const Color = styled.div<{ color: string }>`
   background-color: ${(props) => props.color};
 `;
 
-const EditTitle = styled.p`
-  font-size: 1.25rem;
+const EditTitle = styled.h2`
   font-weight: 600;
   margin-bottom: 1rem;
-`;
-
-const Button = styled.button`
-  font-size: 1rem;
-  background-color: var(--clr-2);
-  border-radius: 0.5rem;
-  border: none;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: 0.2s;
-
-  &:hover {
-    background-color: var(--clr-1);
-  }
 `;
 
 function ProductPage() {
@@ -123,7 +110,8 @@ function ProductPage() {
     handleSubmit,
     formState: { isSubmitting },
     reset,
-  } = useForm<ProductApi.ProductUpdateInput>({
+    setValue,
+  } = useForm<ProductApi.ProductInput>({
     defaultValues: {
       title: "",
       desc: "",
@@ -143,12 +131,14 @@ function ProductPage() {
     sortOptions: [],
   });
   const [errorText, setErrorText] = useState<string | null>(null);
-  const [newColor, setNewColor] = useState<string>("#000");
+  const [newColor, setNewColor] = useState<string | undefined>();
+  const [showModal, setShowModal] = useState(false);
 
-  async function onSubmit(input: ProductApi.ProductUpdateInput) {
+  async function onSubmit(input: ProductApi.ProductInput) {
     try {
       const repsonse = await ProductApi.updateProduct(productId!, input);
       setProduct(repsonse);
+      setShowModal(true);
     } catch (error) {
       if (error instanceof UnauthorizedError) {
         setErrorText(error.message);
@@ -198,6 +188,20 @@ function ProductPage() {
     };
     fetchConstants();
   }, []);
+
+  const handleAddColor = () => {
+    if (newColor && !product?.colors?.includes(newColor)) {
+      const updatedColors = [...product?.colors!, newColor];
+      setValue("colors", updatedColors);
+      setProduct((prev) => (prev ? { ...prev, colors: updatedColors } : undefined));
+    }
+  };
+
+  const handleRemoveColor = (color: string) => {
+    const updatedColors = product?.colors?.filter((c) => c !== color);
+    setValue("colors", updatedColors);
+    setProduct((prev) => (prev ? { ...prev, colors: updatedColors } : undefined));
+  };
 
   return (
     <Container>
@@ -325,13 +329,7 @@ function ProductPage() {
                   <button
                     type="button"
                     className="btn btn-sm btn-danger ms-1"
-                    onClick={() => {
-                      reset({ colors: product.colors!.filter((c) => c !== color) });
-                      setProduct({
-                        ...product!,
-                        colors: product.colors!.filter((c) => c !== color),
-                      });
-                    }}
+                    onClick={() => handleRemoveColor(color)}
                   >
                     X
                   </button>
@@ -344,25 +342,13 @@ function ProductPage() {
             <div className="d-flex align-items-center gap-2">
               <Form.Control
                 type="color"
-                value={newColor}
+                value={newColor || "#333"}
                 onChange={(e) => setNewColor(e.target.value)}
                 style={{ width: "100px" }}
               />
-              <Button
-                type="button"
-                onClick={() => {
-                  if (newColor && !product?.colors?.includes(newColor)) {
-                    reset({
-                      ...product,
-                      colors: [...(product?.colors || []), newColor],
-                    });
-                    setProduct({ ...product!, colors: [...(product?.colors || []), newColor] });
-                  }
-                }}
-                disabled={!newColor}
-              >
+              <Button.Secondary size="1rem" type="button" onClick={handleAddColor}>
                 Add
-              </Button>
+              </Button.Secondary>
             </div>
           </Form.Group>
           <Form.Group className="mb-4">
@@ -374,11 +360,18 @@ function ProductPage() {
             <Form.Control type="number" placeholder="Stock" {...register("stock")} />
           </Form.Group>
 
-          <Button type="submit" disabled={isSubmitting}>
+          <Button.Primary size="1.5rem" type="submit" disabled={isSubmitting}>
             Update
-          </Button>
+          </Button.Primary>
         </Form>
       </BottomContainer>
+      <CustomModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        variant="success"
+        title="Success"
+        message="Product updated successfully!"
+      />
     </Container>
   );
 }

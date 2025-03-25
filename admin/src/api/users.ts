@@ -1,12 +1,12 @@
 import { fetchData } from "./fetchData";
 import { User, PublicUser } from "../models/user";
 
-export interface UserInput {
+export interface UserLoginInput {
   username: string;
   password: string;
 }
 
-export const login = async (user: UserInput): Promise<User> => {
+export const login = async (user: UserLoginInput): Promise<User> => {
   const response = await fetchData("/api/auths/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -26,13 +26,23 @@ export const getUser = async (id: string): Promise<PublicUser> => {
   return response.json();
 };
 
-export interface UserUpdateInput {
+export interface UserInput {
   username?: string;
   password?: string;
   email?: string;
 }
 
-export const updateUser = async (id: string, user: UserUpdateInput): Promise<PublicUser> => {
+export const createUser = async (user: UserInput): Promise<PublicUser> => {
+  const response = await fetchData(`/api/auths/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(user),
+  });
+
+  return response.json();
+};
+
+export const updateUser = async (id: string, user: UserInput): Promise<PublicUser> => {
   const response = await fetchData(`/api/users/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

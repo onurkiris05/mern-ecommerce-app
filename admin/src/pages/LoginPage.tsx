@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
-import { UserInput } from "../api/users";
+import { UserLoginInput } from "../api/users";
 import * as UserApi from "../api/users";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
@@ -55,12 +55,12 @@ function LoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<UserInput>();
+  } = useForm<UserLoginInput>();
   const dispatch = useDispatch();
   const [errorText, setErrorText] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  async function onSubmit(input: UserInput) {
+  async function onSubmit(input: UserLoginInput) {
     try {
       const userResponse = await UserApi.login(input);
       if (userResponse.isAdmin) {

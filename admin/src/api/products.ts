@@ -11,7 +11,7 @@ export const getProduct = async (id: string): Promise<Product> => {
   return response.json();
 };
 
-export interface ProductUpdateInput {
+export interface ProductInput {
   title?: string;
   desc?: string;
   img?: string;
@@ -23,7 +23,17 @@ export interface ProductUpdateInput {
   stock?: number;
 }
 
-export const updateProduct = async (id: string, product: ProductUpdateInput): Promise<Product> => {
+export const createProduct = async (product: ProductInput): Promise<Product> => {
+  const response = await fetchData(`/api/products`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(product),
+  });
+
+  return response.json();
+};
+
+export const updateProduct = async (id: string, product: ProductInput): Promise<Product> => {
   const response = await fetchData(`/api/products/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
