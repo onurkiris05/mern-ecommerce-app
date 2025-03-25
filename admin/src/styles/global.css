@@ -33,6 +33,10 @@
   font-weight: 400;
 }
 
+p {
+  margin: 0;
+}
+
 a {
   all: unset;
   display: flex;

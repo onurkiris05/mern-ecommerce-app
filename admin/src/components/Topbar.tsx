@@ -1,14 +1,17 @@
 import styled from "styled-components";
 import { NotificationsNone, Language, Settings } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import { persistor } from "../redux/store";
 
 const Container = styled.div`
   width: 100%;
   height: 5vh;
+  padding: 2rem 0;
   background-color: white;
   position: sticky;
   top: 0;
   z-index: 999;
+  box-shadow: 0px 0px 1rem -0.5rem rgba(0, 0, 0, 0.75);
 `;
 
 const Wrapper = styled.div`
@@ -82,7 +85,17 @@ const StyledLink = styled(Link)`
   cursor: pointer;
 `;
 
+const Logout = styled.div`
+  margin-left: 1rem;
+  cursor: pointer;
+`;
+
 function Topbar() {
+  const handleLogout = () => {
+    persistor.purge();
+    window.location.href = "/";
+  };
+
   return (
     <Container>
       <Wrapper>
@@ -108,6 +121,7 @@ function Topbar() {
             src="https://images.pexels.com/photos/1526814/pexels-photo-1526814.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
             alt=""
           />
+          <Logout onClick={handleLogout}>Logout</Logout>
         </Right>
       </Wrapper>
     </Container>

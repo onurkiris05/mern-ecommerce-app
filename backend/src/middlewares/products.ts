@@ -3,14 +3,16 @@ import createHttpError from "http-errors";
 import Product from "../models/product";
 import mongoose from "mongoose";
 
-interface ProductBody {
+export interface ProductBody {
   title?: string;
   desc?: string;
   img?: string;
-  categories?: typeof Array;
-  size?: string;
-  color?: string;
+  categories?: string[];
+  genders?: string[];
+  sizes?: string[];
+  colors?: string[];
   price?: number;
+  stock?: number;
 }
 
 export const validateCreateProduct: RequestHandler<unknown, unknown, ProductBody, unknown> = async (
@@ -49,29 +51,15 @@ export const validateUpdateProduct: RequestHandler<
   unknown
 > = async (req, res, next) => {
   const { id } = req.params;
-  const { title, desc, img, price } = req.body;
+  const { title } = req.body;
 
   if (!mongoose.isValidObjectId(id)) {
     throw createHttpError(400, "Invalid Product Id");
   }
 
-  if (!title) {
-    throw createHttpError(400, "Title is required");
-  }
-
   const existingProduct = await Product.findOne({ title });
-  if (existingProduct) {
+  if (existingProduct && !existingProduct._id.equals(id)) {
     throw createHttpError(409, "Product title already exists");
-  }
-
-  if (!desc) {
-    throw createHttpError(400, "Description is required");
-  }
-  if (!img) {
-    throw createHttpError(400, "Image is required");
-  }
-  if (!price) {
-    throw createHttpError(400, "Price is required");
   }
 
   next();

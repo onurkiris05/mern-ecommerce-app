@@ -17,7 +17,7 @@ const Table = styled.table`
 `;
 
 const Row = styled.tr`
-  height: 3rem;
+  height: 4rem;
 `;
 
 const Th = styled.th`

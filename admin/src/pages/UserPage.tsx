@@ -96,7 +96,7 @@ function UserPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
     reset,
   } = useForm<UserApi.UserUpdateInput>({
     defaultValues: {
@@ -185,35 +185,13 @@ function UserPage() {
           <Form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
             {errorText && <Alert variant="danger">{errorText}</Alert>}
             <Form.Group className="mb-4">
-              <Form.Control
-                type="text"
-                placeholder="Username"
-                isInvalid={!!errors.username}
-                {...register("username")}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.username?.message}
-              </Form.Control.Feedback>
+              <Form.Control type="text" placeholder="Username" {...register("username")} />
             </Form.Group>
             <Form.Group className="mb-4">
-              <Form.Control
-                type="email"
-                placeholder="Email"
-                isInvalid={!!errors.email}
-                {...register("email")}
-              />
-              <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
+              <Form.Control type="email" placeholder="Email" {...register("email")} />
             </Form.Group>
             <Form.Group className="mb-4">
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                isInvalid={!!errors.password}
-                {...register("password")}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.password?.message}
-              </Form.Control.Feedback>
+              <Form.Control type="password" placeholder="Password" {...register("password")} />
             </Form.Group>
             <Button type="submit" disabled={isSubmitting}>
               Edit

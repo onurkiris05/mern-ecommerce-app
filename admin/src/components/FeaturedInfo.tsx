@@ -37,10 +37,10 @@ const MoneyRate = styled.span`
   margin-left: 1.25rem;
 `;
 
-const Icon = styled.span<{ negative?: boolean }>`
+const Icon = styled.span<{ $negative?: boolean }>`
   font-size: 1rem;
   margin-left: 0.5rem;
-  color: ${(props) => (props.negative ? "red" : "green")};
+  color: ${(props) => (props.$negative ? "red" : "green")};
 `;
 
 const Sub = styled.span`
@@ -70,7 +70,7 @@ function FeaturedInfo() {
             <Money>{item.amount}</Money>
             <MoneyRate>
               {item.rate}{" "}
-              <Icon negative={item.rate < 0}>
+              <Icon $negative={item.rate < 0}>
                 {item.rate < 0 ? <ArrowDownward /> : <ArrowUpward />}
               </Icon>
             </MoneyRate>

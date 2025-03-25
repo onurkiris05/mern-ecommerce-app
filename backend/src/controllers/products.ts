@@ -3,6 +3,7 @@ import Product from "../models/product";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
 import { getSortOption } from "../utils/sort";
+import { ProductBody } from "../middlewares/products";
 
 export const getAllProducts: RequestHandler = async (req, res) => {
   const { new: qNew, gender: qGender, category: qCategory, size: qSize, sort: qSort } = req.query;
@@ -47,8 +48,20 @@ export const createProduct: RequestHandler = async (req, res) => {
 
 export const updateProduct: RequestHandler = async (req, res) => {
   const { id } = req.params;
+  const { title, desc, img, categories, genders, sizes, colors, price, stock } = req.body;
 
-  const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+  const updatedFields: Partial<ProductBody> = {};
+  if (title) updatedFields.title = title;
+  if (desc) updatedFields.desc = desc;
+  if (img) updatedFields.img = img;
+  updatedFields.categories = categories;
+  updatedFields.genders = genders;
+  updatedFields.sizes = sizes;
+  updatedFields.colors = colors;
+  if (price) updatedFields.price = price;
+  updatedFields.stock = stock;
+
+  const updatedProduct = await Product.findByIdAndUpdate(id, updatedFields, {
     new: true,
   });
 

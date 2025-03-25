@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
 import { DeleteOutline } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { productRows } from "../dummyData";
+import { Product } from "../models/product";
+import * as ProductApi from "../api/products";
+import { formatDate } from "../utils";
 
 const Container = styled.div`
   flex: 1;
@@ -19,6 +21,7 @@ const Title = styled.h1`
 `;
 
 const Item = styled.div`
+  height: 100%;
   display: flex;
   align-items: center;
 `;
@@ -69,15 +72,40 @@ const ActionWrapper = styled.div`
   align-items: center;
 `;
 
-function ProductListPage() {
-  const [data, setData] = useState(productRows);
+const Color = styled.div<{ color: string }>`
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid var(--clr-1);
+  background-color: ${(props) => props.color};
+`;
 
-  const handleDelete = (id: number) => {
-    setData(data.filter((item) => item.id !== id));
+function ProductListPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productsResponse = await ProductApi.getAllProducts();
+        setProducts(productsResponse);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await ProductApi.deleteProduct(id);
+      setProducts(products.filter((product) => product._id !== id));
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
+    { field: "_id", headerName: "ID", width: 90 },
     {
       field: "product",
       headerName: "Product",
@@ -86,21 +114,73 @@ function ProductListPage() {
         return (
           <Item>
             <Img src={params.row.img} alt="" />
-            {params.row.name}
+            {params.row.title}
           </Item>
         );
       },
     },
-    { field: "stock", headerName: "Stock", width: 200 },
     {
-      field: "status",
-      headerName: "Status",
-      width: 120,
+      field: "categories",
+      headerName: "Categories",
+      width: 100,
+      renderCell: (params: any) => {
+        return <Item>{params.row.categories?.join(", ")}</Item>;
+      },
+    },
+    {
+      field: "genders",
+      headerName: "Genders",
+      width: 100,
+      renderCell: (params: any) => {
+        return <Item>{params.row.genders?.join(", ")}</Item>;
+      },
+    },
+    {
+      field: "sizes",
+      headerName: "Sizes",
+      width: 100,
+      renderCell: (params: any) => {
+        return <Item>{params.row.sizes?.join(", ")}</Item>;
+      },
+    },
+    {
+      field: "colors",
+      headerName: "Colors",
+      width: 150,
+      renderCell: (params: any) => {
+        return (
+          <Item>
+            {params.row.colors?.map((color: string, i: number) => (
+              <Color key={i} color={color} />
+            ))}
+          </Item>
+        );
+      },
     },
     {
       field: "price",
       headerName: "Price",
-      width: 160,
+      width: 100,
+      renderCell: (params: any) => {
+        return `$${params.row.price}`;
+      },
+    },
+    { field: "stock", headerName: "Stock", width: 100 },
+    {
+      field: "createdAt",
+      headerName: "CreatedAt",
+      width: 180,
+      renderCell: (params: any) => {
+        return formatDate(params.row.createdAt);
+      },
+    },
+    {
+      field: "updatedAt",
+      headerName: "UpdatedAt",
+      width: 180,
+      renderCell: (params: any) => {
+        return formatDate(params.row.updatedAt);
+      },
     },
     {
       field: "action",
@@ -109,10 +189,10 @@ function ProductListPage() {
       renderCell: (params: any) => {
         return (
           <ActionWrapper>
-            <Link to={"/product/" + params.row.id}>
+            <Link to={"/product/" + params.row._id}>
               <Edit>Edit</Edit>
             </Link>
-            <Delete onClick={() => handleDelete(params.row.id)} />
+            <Delete onClick={() => handleDelete(params.row._id)} />
           </ActionWrapper>
         );
       },
@@ -128,7 +208,8 @@ function ProductListPage() {
         </Link>
       </TitleWrapper>
       <DataGrid
-        rows={data}
+        rows={products}
+        getRowId={(row) => row._id}
         disableRowSelectionOnClick
         columns={columns}
         checkboxSelection

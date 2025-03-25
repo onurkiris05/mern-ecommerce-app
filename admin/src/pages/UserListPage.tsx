@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { PublicUser } from "../models/user";
 import * as UsersApi from "../api/users";
 import { DeleteOutline } from "@mui/icons-material";
+import { formatDate } from "../utils";
 
 const Container = styled.div`
   flex: 1;
@@ -105,6 +106,22 @@ function UserListPage() {
       width: 120,
       renderCell: (params: any) => {
         return <>{params.row.isAdmin ? "Yes" : "No"}</>;
+      },
+    },
+    {
+      field: "createdAt",
+      headerName: "CreatedAt",
+      width: 180,
+      renderCell: (params: any) => {
+        return formatDate(params.row.createdAt);
+      },
+    },
+    {
+      field: "updatedAt",
+      headerName: "UpdatedAt",
+      width: 180,
+      renderCell: (params: any) => {
+        return formatDate(params.row.updatedAt);
       },
     },
     {
