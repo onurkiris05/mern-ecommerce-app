@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Product } from "../models/product";
 import * as ProductApi from "../api/products";
 import { formatDate } from "../utils";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Alert, Form } from "react-bootstrap";
 import { UnauthorizedError } from "../errors/http_errors";
 import * as ConstantsApi from "../api/constants";
@@ -111,6 +111,8 @@ function ProductPage() {
     formState: { isSubmitting },
     reset,
     setValue,
+    getValues,
+    control,
   } = useForm<ProductApi.ProductInput>({
     defaultValues: {
       title: "",
@@ -133,6 +135,7 @@ function ProductPage() {
   const [errorText, setErrorText] = useState<string | null>(null);
   const [newColor, setNewColor] = useState<string | undefined>();
   const [showModal, setShowModal] = useState(false);
+  const colors = useWatch({ name: "colors", control });
 
   async function onSubmit(input: ProductApi.ProductInput) {
     try {
@@ -190,17 +193,19 @@ function ProductPage() {
   }, []);
 
   const handleAddColor = () => {
-    if (newColor && !product?.colors?.includes(newColor)) {
-      const updatedColors = [...product?.colors!, newColor];
+    if (!newColor) return;
+
+    const currentColors = getValues("colors") || [];
+    if (!currentColors.includes(newColor)) {
+      const updatedColors = [...currentColors, newColor];
       setValue("colors", updatedColors);
-      setProduct((prev) => (prev ? { ...prev, colors: updatedColors } : undefined));
     }
   };
 
   const handleRemoveColor = (color: string) => {
-    const updatedColors = product?.colors?.filter((c) => c !== color);
+    const currentColors = getValues("colors") || [];
+    const updatedColors = currentColors.filter((c) => c !== color);
     setValue("colors", updatedColors);
-    setProduct((prev) => (prev ? { ...prev, colors: updatedColors } : undefined));
   };
 
   return (
@@ -323,7 +328,7 @@ function ProductPage() {
           <Form.Group className="mb-4">
             <Form.Label className="me-4">Colors: </Form.Label>
             <div className="d-flex flex-wrap gap-4">
-              {product?.colors?.map((color: string, i: number) => (
+              {colors?.map((color: string, i: number) => (
                 <div key={i} className="d-flex align-items-center">
                   <Color color={color} />
                   <button

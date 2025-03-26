@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import styled from "styled-components";
 import * as ProductApi from "../api/products";
 import CustomModal from "../components/CustomModal";
@@ -35,13 +35,15 @@ const Color = styled.div<{ color: string }>`
 function NewProductPage() {
   const [showModal, setShowModal] = useState(false);
   const [errorText, setErrorText] = useState<string | null>(null);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [newColor, setNewColor] = useState<string | undefined>();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
+    getValues,
+    reset,
+    control,
   } = useForm<ProductApi.ProductInput>();
   const [constants, setConstants] = useState<ConstantsApi.ConstantsProps>({
     categoryOptions: [],
@@ -49,6 +51,7 @@ function NewProductPage() {
     sizeOptions: [],
     sortOptions: [],
   });
+  const colors = useWatch({ name: "colors", control });
 
   async function onSubmit(input: ProductApi.ProductInput) {
     const payload = {
@@ -62,6 +65,7 @@ function NewProductPage() {
     try {
       await ProductApi.createProduct(payload);
       setShowModal(true);
+      reset();
     } catch (error: any) {
       setErrorText(error.message);
       console.error(error);
@@ -81,16 +85,18 @@ function NewProductPage() {
   }, []);
 
   const handleAddColor = () => {
-    if (newColor && !selectedColors.includes(newColor)) {
-      const updatedColors = [...selectedColors, newColor];
-      setSelectedColors(updatedColors);
+    if (!newColor) return;
+
+    const currentColors = getValues("colors") || [];
+    if (!currentColors.includes(newColor)) {
+      const updatedColors = [...currentColors, newColor];
       setValue("colors", updatedColors);
     }
   };
 
   const handleRemoveColor = (color: string) => {
-    const updatedColors = selectedColors.filter((c) => c !== color);
-    setSelectedColors(updatedColors);
+    const currentColors = getValues("colors") || [];
+    const updatedColors = currentColors.filter((c) => c !== color);
     setValue("colors", updatedColors);
   };
 
@@ -173,19 +179,18 @@ function NewProductPage() {
           <Form.Group className="mb-4">
             <Form.Label className="me-4">Colors: </Form.Label>
             <div className="d-flex flex-wrap gap-4">
-              {selectedColors.length > 0 &&
-                selectedColors.map((color: string, i: number) => (
-                  <div key={i} className="d-flex align-items-center">
-                    <Color color={color} />
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-danger ms-1"
-                      onClick={() => handleRemoveColor(color)}
-                    >
-                      X
-                    </button>
-                  </div>
-                ))}
+              {colors?.map((color: string, i: number) => (
+                <div key={i} className="d-flex align-items-center">
+                  <Color color={color} />
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-danger ms-1"
+                    onClick={() => handleRemoveColor(color)}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
             </div>
           </Form.Group>
           <Form.Group className="mb-4">
