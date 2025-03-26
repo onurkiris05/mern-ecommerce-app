@@ -1,5 +1,9 @@
 import styled from "styled-components";
-import { transactions } from "../../dummyData";
+import { Order } from "../../models/order";
+import { useEffect, useState } from "react";
+import * as OrderApi from "../../api/orders";
+import { formatDate } from "../../utils";
+import { DataGrid } from "@mui/x-data-grid";
 
 const Container = styled.div`
   flex: 2;
@@ -12,79 +16,124 @@ const Title = styled.h3`
   font-weight: 600;
 `;
 
-const Table = styled.table`
-  width: 100%;
+const Text = styled.p`
+  font-size: 0.875rem;
+  font-weight: 300;
 `;
 
-const Row = styled.tr`
-  height: 4rem;
+const Bold = styled.p`
+  font-weight: 500;
 `;
 
-const Th = styled.th`
-  text-align: left;
-`;
-
-const User = styled.td`
+const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  font-weight: 600;
-`;
-
-const Img = styled.img`
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 0.5rem;
-`;
-
-const Date = styled.td`
-  font-weight: 300;
-`;
-
-const Amount = styled.td`
-  font-weight: 300;
+  height: 100%;
 `;
 
 const Button = styled.button<{ type: string }>`
-  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+  padding: 0 0.5rem;
   border: none;
   border-radius: 0.5rem;
   background-color: ${(props) =>
-    props.type === "Approved" ? "#e5faf2" : props.type === "Declined" ? "#fff0f1" : "#ebf1fe"};
+    props.type === "approved" ? "#e5faf2" : props.type === "declined" ? "#fff0f1" : "#ebf1fe"};
   color: ${(props) =>
-    props.type === "Approved" ? "#3bb077" : props.type === "Declined" ? "#d95087" : "#2a7ade"};
+    props.type === "approved" ? "#3bb077" : props.type === "declined" ? "#d95087" : "#2a7ade"};
 `;
 
 function WidgetLg() {
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await OrderApi.getAllOrders();
+        setOrders(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchOrders();
+  }, []);
+
+  const columns = [
+    { field: "_id", headerName: "Order ID", width: 250 },
+    {
+      field: "createdAt",
+      headerName: "Date",
+      width: 200,
+      renderCell: (params: any) => {
+        return <Text>{formatDate(params.row.createdAt)}</Text>;
+      },
+    },
+    {
+      field: "amount",
+      headerName: "Amount",
+      width: 100,
+      renderCell: (params: any) => {
+        return <Bold>{`$${params.row.amount}`}</Bold>;
+      },
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 130,
+      renderCell: (params: any) => {
+        return (
+          <ButtonWrapper>
+            <Button type={params.row.status}>{params.row.status}</Button>
+          </ButtonWrapper>
+        );
+      },
+    },
+  ];
+
   return (
     <Container>
       <Title>Latest transactions</Title>
-      <Table>
+      <DataGrid
+        rows={orders}
+        getRowId={(row) => row._id}
+        disableRowSelectionOnClick
+        columns={columns}
+        pageSizeOptions={[5, 10, 25, { value: -1, label: "All" }]}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+              page: 0,
+            },
+          },
+        }}
+      />
+      {/* <Table>
         <thead>
           <tr>
-            <Th>Customer</Th>
+            <Th>Order ID</Th>
             <Th>Date</Th>
             <Th>Amount</Th>
             <Th>Status</Th>
           </tr>
         </thead>
         <tbody>
-          {transactions.map((transaction, i) => (
-            <Row key={i}>
-              <User>
-                <Img src={transaction.image} alt="" />
-                <span>{transaction.customer}</span>
-              </User>
-              <Date>{transaction.date}</Date>
-              <Amount>{transaction.amount}</Amount>
-              <td>
-                <Button type={transaction.status}>{transaction.status}</Button>
-              </td>
+          {orders.map((order) => (
+            <Row key={order._id}>
+              <Data>{order._id}</Data>
+              <Data>{formatDate(order.createdAt)}</Data>
+              <Data>
+                <strong>${order.amount}</strong>
+              </Data>
+              <Data>
+                <Button type={order.status}>{order.status}</Button>
+              </Data>
             </Row>
           ))}
         </tbody>
-      </Table>
+      </Table> */}
     </Container>
   );
 }

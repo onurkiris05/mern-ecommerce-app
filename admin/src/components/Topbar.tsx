@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { NotificationsNone, Language, Settings } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { persistor } from "../redux/store";
+import { Button } from "./Button";
 
 const Container = styled.div`
   width: 100%;
@@ -64,6 +65,7 @@ const Avatar = styled.img`
   height: 2.5rem;
   border-radius: 50%;
   cursor: pointer;
+  margin-right: 1rem;
 `;
 
 const LogoFirst = styled.h1`
@@ -82,11 +84,6 @@ const LogoLast = styled.span`
 const StyledLink = styled(Link)`
   all: unset;
   display: flex;
-  cursor: pointer;
-`;
-
-const Logout = styled.div`
-  margin-left: 1rem;
   cursor: pointer;
 `;
 
@@ -121,7 +118,9 @@ function Topbar() {
             src="https://images.pexels.com/photos/1526814/pexels-photo-1526814.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
             alt=""
           />
-          <Logout onClick={handleLogout}>Logout</Logout>
+          <Button.Secondary size="1rem" onClick={handleLogout}>
+            Logout
+          </Button.Secondary>
         </Right>
       </Wrapper>
     </Container>

@@ -9,6 +9,7 @@ import { UnauthorizedError } from "../errors/http_errors";
 import { Alert } from "react-bootstrap";
 import { login } from "../redux/userRedux";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../components/Button";
 
 const Body = styled.div`
   width: 100vw;
@@ -39,15 +40,6 @@ const Window = styled.div`
   width: min(25rem, 95%);
   background-color: #fff;
   padding: 2rem;
-`;
-
-const Button = styled.button`
-  font-size: 1.5rem;
-  background-color: var(--clr-2);
-  border-radius: 0.5rem;
-  border: none;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
 `;
 
 function LoginPage() {
@@ -104,9 +96,9 @@ function LoginPage() {
             />
             <Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>
           </Form.Group>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button.Primary size="1.5rem" type="submit" disabled={isSubmitting}>
             Login
-          </Button>
+          </Button.Primary>
         </Form>
       </Window>
     </Body>

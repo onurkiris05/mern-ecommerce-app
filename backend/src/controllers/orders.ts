@@ -36,7 +36,7 @@ export const getPrevMonthIncome: RequestHandler = async (req, res, next) => {
 };
 
 export const getAllOrders: RequestHandler = async (req, res) => {
-  const orders = await Order.find();
+  const orders = await Order.find().sort({ createdAt: -1 });
 
   res.status(200).json(orders);
 };
