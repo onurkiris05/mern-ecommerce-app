@@ -41,14 +41,34 @@ export const getAllOrders: RequestHandler = async (req, res) => {
   res.status(200).json(orders);
 };
 
-export const getOrder: RequestHandler<{ userId: string }> = async (req, res) => {
-  const { userId } = req.params;
+export const getUserOrders: RequestHandler<{ id: string }> = async (req, res) => {
+  const { id } = req.params;
 
-  if (!mongoose.isValidObjectId(userId)) {
+  if (!mongoose.isValidObjectId(id)) {
     throw createHttpError(400, "Invalid User Id");
   }
 
-  const order = await Order.find({ userId: userId });
+  const orders = await Order.find({ userId: id });
+
+  if (!orders) {
+    throw createHttpError(404, "Orders not found");
+  }
+
+  res.status(200).json(orders);
+};
+
+export const getOrder: RequestHandler<{ id: string }> = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.isValidObjectId(id)) {
+    throw createHttpError(400, "Invalid Order Id");
+  }
+
+  const order = await Order.findById(id);
+
+  if (!order) {
+    throw createHttpError(404, "Order not found");
+  }
 
   res.status(200).json(order);
 };

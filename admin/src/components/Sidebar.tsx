@@ -12,6 +12,7 @@ import {
   ChatBubbleOutline,
   WorkOutline,
   Report,
+  ShoppingBag,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { ReactElement } from "react";
@@ -81,7 +82,7 @@ const sidebarData: SidebarItemProps[] = [
     items: [
       { name: "Users", icon: <PermIdentity />, link: "/users" },
       { name: "Products", icon: <Storefront />, link: "/products" },
-      { name: "Transactions", icon: <HandymanIcon /> }, //<AttachMoney />
+      { name: "Orders", icon: <ShoppingBag />, link: "/orders" },
       { name: "Reports", icon: <HandymanIcon /> }, //<BarChart />
     ],
   },
@@ -97,7 +98,6 @@ const sidebarData: SidebarItemProps[] = [
     title: "Staff",
     items: [
       { name: "Manage", icon: <HandymanIcon /> }, //<WorkOutline />
-      { name: "Analytics", icon: <HandymanIcon /> }, //<Timeline />
       { name: "Reports", icon: <HandymanIcon /> }, //<Report />
     ],
   },

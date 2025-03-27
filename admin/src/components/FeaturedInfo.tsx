@@ -67,14 +67,14 @@ function FeaturedInfo() {
   }, []);
 
   useEffect(() => {
-    if (!incomes.length) return;
-    setRate(parseFloat(((incomes[1].totalIncome / incomes[0].totalIncome - 1) * 100).toFixed(1)));
+    incomes.length > 1 &&
+      setRate(parseFloat(((incomes[1].totalIncome / incomes[0].totalIncome - 1) * 100).toFixed(1)));
   }, [incomes]);
 
   const data = [
     {
       title: "Revenue",
-      amount: incomes.length > 0 ? `$${incomes[1].totalIncome}` : "$0",
+      amount: incomes.length > 1 ? `$${incomes[1].totalIncome}` : "$0",
       rate: rate,
     },
     { title: "Sales", amount: "$4,415", rate: -1.4 },

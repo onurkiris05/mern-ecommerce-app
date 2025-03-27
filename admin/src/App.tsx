@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar";
@@ -10,8 +11,9 @@ import ProductListPage from "./pages/ProductListPage";
 import ProductPage from "./pages/ProductPage";
 import NewProductPage from "./pages/NewProductPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import { useSelector } from "react-redux";
 import LoginPage from "./pages/LoginPage";
+import OrderListPage from "./pages/OrderListPage";
+import OrderPage from "./pages/OrderPage";
 
 const Container = styled.div`
   display: flex;
@@ -39,6 +41,8 @@ function App() {
               <Route path="/products" element={<ProductListPage />} />
               <Route path="/product/:productId" element={<ProductPage />} />
               <Route path="/newproduct" element={<NewProductPage />} />
+              <Route path="/orders" element={<OrderListPage />} />
+              <Route path="/order/:orderId" element={<OrderPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Container>

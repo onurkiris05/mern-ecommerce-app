@@ -63,3 +63,23 @@ export const Icon = styled.button<{ size?: string; color?: string; padding?: str
     box-shadow: inset 0 1rem 2rem rgba(0, 0, 0, 0.2);
   }
 `;
+
+export const Status = styled.button<{
+  status: "approved" | "declined" | "pending";
+  size?: string;
+  color?: string;
+  padding?: string;
+}>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: ${({ size }) => size || "2rem"};
+  padding: ${({ padding }) => padding || "0 0.5rem"};
+  border: none;
+  border-radius: 0.5rem;
+  background-color: ${({ status: statusType }) =>
+    statusType === "approved" ? "#e5faf2" : statusType === "declined" ? "#fff0f1" : "#ebf1fe"};
+  color: ${({ color, status: statusType }) =>
+    color ||
+    (statusType === "approved" ? "#3bb077" : statusType === "declined" ? "#d95087" : "#2a7ade")};
+`;

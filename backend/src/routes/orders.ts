@@ -22,13 +22,14 @@ router.get(
 );
 
 router.get(
-  "/:userId",
+  "/user/:id",
   AuthsService.verifyTokenAndAuthorization,
-  handleAsync(OrdersController.getOrder)
+  handleAsync(OrdersController.getUserOrders)
 );
 
 router
   .route("/:id")
+  .get(AuthsService.verifyTokenAndAdmin, handleAsync(OrdersController.getOrder))
   .put(
     AuthsService.verifyTokenAndAdmin,
     handleAsync(OrdersService.validateUpdateOrder),

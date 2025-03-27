@@ -1,22 +1,21 @@
 import styled from "styled-components";
 import {
   CalendarToday,
-  MailOutline,
   PermIdentity,
-  CheckCircle,
-  Cancel,
-  ManageAccounts,
+  Category,
+  AttachMoney,
+  LocationOn,
+  Toc,
 } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
-import * as UserApi from "../api/users";
-import { PublicUser } from "../models/user";
 import { useEffect, useState } from "react";
 import { formatDate } from "../utils";
 import { Alert, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { UnauthorizedError } from "../errors/http_errors";
 import CustomModal from "../components/CustomModal";
 import { Button } from "../components/Button";
+import { Order } from "../models/order";
+import * as OrderApi from "../api/orders";
 
 const Container = styled.div`
   flex: 1;
@@ -38,7 +37,7 @@ const Card = styled.div`
 `;
 
 const Update = styled.div`
-  flex: 2;
+  flex: 1;
   padding: 2rem;
   -webkit-box-shadow: 0px 0px 1rem -0.5rem rgba(0, 0, 0, 0.75);
   box-shadow: 0px 0px 1rem -0.5rem rgba(0, 0, 0, 0.75);
@@ -58,6 +57,13 @@ const CardInfo = styled.div`
   margin: 0.75rem 0;
 `;
 
+const CardProductInfo = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0.75rem 0;
+`;
+
 const CardInfoTitle = styled.p`
   margin: 0;
   font-weight: 500;
@@ -67,6 +73,12 @@ const CardInfoTitle = styled.p`
 const CardInfoDesc = styled.p`
   margin: 0;
   margin-left: 0.5rem;
+`;
+
+const CardProductInfoDesc = styled.p`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const UpdateTitle = styled.h2`
@@ -79,96 +91,119 @@ const ButtonWrapper = styled.div`
   align-items: center;
 `;
 
-function UserPage() {
-  const { userId } = useParams();
-  const [user, setUser] = useState<PublicUser>();
+function OrderPage() {
+  const { orderId } = useParams();
+  const [order, setOrder] = useState<Order>();
   const [showModal, setShowModal] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
     reset,
-  } = useForm<UserApi.UserInput>({
+  } = useForm<{ status: string }>({
     defaultValues: {
-      username: "",
-      email: "",
-      password: "",
+      status: "pending",
     },
   });
   const [errorText, setErrorText] = useState<string | null>(null);
 
-  async function onSubmit(input: UserApi.UserInput) {
+  async function onSubmit({ status }: { status: string }) {
     try {
-      const userResponse = await UserApi.updateUser(userId!, input);
-      setUser(userResponse);
+      const updatedOrder: OrderApi.OrderUpdateInput = {
+        userId: order?.userId,
+        amount: order?.amount,
+        address: order?.address,
+        status,
+      };
+      const userResponse = await OrderApi.updateOrder(orderId!, updatedOrder);
+      setOrder(userResponse);
       setShowModal(true);
-    } catch (error) {
-      if (error instanceof UnauthorizedError) {
-        setErrorText(error.message);
-      } else {
-        alert(error);
-      }
+    } catch (error: any) {
+      setErrorText(error.message);
       console.error(error);
     }
   }
 
   useEffect(() => {
-    const getUser = async (id: string) => {
+    const getOrder = async (id: string) => {
       try {
-        const response = await UserApi.getUser(id);
-        setUser(response);
+        const response = await OrderApi.getOrder(id);
+        setOrder(response);
       } catch (error) {
-        console.error("Error fetching user:", error);
+        console.error("Error fetching order:", error);
       }
     };
-    userId && getUser(userId);
-  }, [userId]);
+    orderId && getOrder(orderId);
+  }, [orderId]);
 
   useEffect(() => {
-    if (user) {
+    if (order) {
       reset({
-        username: user.username,
-        email: user.email,
-        password: "",
+        status: order.status,
       });
     }
-  }, [user, reset]);
+  }, [order, reset]);
 
   return (
     <Container>
-      <Title>Edit User</Title>
+      <Title>Edit Order</Title>
       <ContentContainer>
         <Card>
-          <CardTitle>Account Details</CardTitle>
+          <CardTitle>Order Details</CardTitle>
           <CardInfo>
             <CardInfoTitle>
-              <PermIdentity /> Username:
+              <PermIdentity /> User ID:
             </CardInfoTitle>
-            <CardInfoDesc> {user?.username}</CardInfoDesc>
+            <CardInfoDesc> {order?.userId}</CardInfoDesc>
+          </CardInfo>
+          <CardProductInfo>
+            <CardInfoTitle>
+              <Category /> Products:
+            </CardInfoTitle>
+            {order?.products.length &&
+              order.products.map((product: any) => (
+                <CardProductInfoDesc key={product.productId}>
+                  <span>ID: {product.productId}</span> <span>Qty: x{product.quantity}</span>
+                </CardProductInfoDesc>
+              ))}
+          </CardProductInfo>
+          <CardInfo>
+            <CardInfoTitle>
+              <AttachMoney /> Amount:
+            </CardInfoTitle>
+            <CardInfoDesc>{`$${order?.amount}`}</CardInfoDesc>
           </CardInfo>
           <CardInfo>
             <CardInfoTitle>
-              <MailOutline /> Email:
+              <LocationOn /> Address:
             </CardInfoTitle>
-            <CardInfoDesc> {user?.email}</CardInfoDesc>
+            <CardInfoDesc>
+              {order &&
+                Object.values(order.address).map((value, i) => (
+                  <span key={i}>
+                    {value as string}
+                    {i !== Object.values(order.address).length - 1 ? ", " : ""}
+                  </span>
+                ))}
+            </CardInfoDesc>
           </CardInfo>
           <CardInfo>
             <CardInfoTitle>
-              <ManageAccounts /> IsAdmin:
+              <Toc /> Status:
             </CardInfoTitle>
-            <CardInfoDesc> {user?.isAdmin ? <CheckCircle /> : <Cancel />}</CardInfoDesc>
+            {order && <Button.Status status={order.status as any}>{order.status}</Button.Status>}
           </CardInfo>
           <CardInfo>
             <CardInfoTitle>
               <CalendarToday /> Created At:
             </CardInfoTitle>
-            <CardInfoDesc> {user && formatDate(user.createdAt)}</CardInfoDesc>
+            <CardInfoDesc> {order && formatDate(order.createdAt)}</CardInfoDesc>
           </CardInfo>
           <CardInfo>
             <CardInfoTitle>
               <CalendarToday /> Updated At:
             </CardInfoTitle>
-            <CardInfoDesc> {user && formatDate(user.updatedAt)}</CardInfoDesc>
+            <CardInfoDesc> {order && formatDate(order.updatedAt)}</CardInfoDesc>
           </CardInfo>
         </Card>
         <Update>
@@ -176,16 +211,13 @@ function UserPage() {
           <Form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
             {errorText && <Alert variant="danger">{errorText}</Alert>}
             <Form.Group className="mb-4">
-              <Form.Label className="me-4">Username: </Form.Label>
-              <Form.Control type="text" placeholder="Username" {...register("username")} />
-            </Form.Group>
-            <Form.Group className="mb-4">
-              <Form.Label className="me-4">Email: </Form.Label>
-              <Form.Control type="email" placeholder="Email" {...register("email")} />
-            </Form.Group>
-            <Form.Group className="mb-4">
-              <Form.Label className="me-4">Password: </Form.Label>
-              <Form.Control type="password" placeholder="Password" {...register("password")} />
+              <Form.Label>Order Status: </Form.Label>
+              <Form.Select defaultValue="" {...register("status")}>
+                <option value="">Choose...</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="declined">Declined</option>
+              </Form.Select>
             </Form.Group>
             <ButtonWrapper>
               <Button.Primary size="1rem" type="submit" disabled={isSubmitting}>
@@ -200,10 +232,10 @@ function UserPage() {
         onClose={() => setShowModal(false)}
         variant="success"
         title="Success"
-        message="User updated successfully!"
+        message="Order updated successfully!"
       />
     </Container>
   );
 }
 
-export default UserPage;
+export default OrderPage;
