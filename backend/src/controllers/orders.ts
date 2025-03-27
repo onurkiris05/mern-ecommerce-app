@@ -27,7 +27,7 @@ export const getPrevMonthIncome: RequestHandler = async (req, res, next) => {
           totalIncome: { $sum: "$sales" },
         },
       },
-    ]);
+    ]).sort({ _id: 1 });
 
     res.status(200).json(income);
   } catch (error) {

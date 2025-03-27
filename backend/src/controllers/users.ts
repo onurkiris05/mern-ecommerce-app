@@ -21,7 +21,7 @@ export const getStats: RequestHandler = async (req, res) => {
         total: { $sum: 1 },
       },
     },
-  ]);
+  ]).sort({ createdAt: -1 });
 
   res.status(200).json(data);
 };

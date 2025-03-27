@@ -16,6 +16,11 @@ export const login = async (user: UserLoginInput): Promise<User> => {
   return response.json();
 };
 
+export const getStats = async (): Promise<[{ _id: number; total: number }]> => {
+  const response = await fetchData(`/api/users/stats`, { method: "GET" });
+  return response.json();
+};
+
 export const getAllUsers = async (latest?: boolean): Promise<PublicUser[]> => {
   const query = latest ? "?new=true" : "";
   const response = await fetchData(`/api/users${query}`, { method: "GET" });

@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import * as OrderApi from "../api/orders";
 
 const Container = styled.div`
   width: 100%;
@@ -48,28 +50,46 @@ const Sub = styled.span`
   color: gray;
 `;
 
-interface DataItem {
-  title: string;
-  amount: string;
-  rate: number;
-}
-
-const data: DataItem[] = [
-  { title: "Revenue", amount: "$2,415", rate: -11.4 },
-  { title: "Sales", amount: "$4,415", rate: -1.4 },
-  { title: "Cost", amount: "$2,225", rate: 2.4 },
-];
-
 function FeaturedInfo() {
+  const [incomes, setIncomes] = useState<{ _id: number; totalIncome: number }[]>([]);
+  const [rate, setRate] = useState(0);
+
+  useEffect(() => {
+    const getIncomes = async () => {
+      try {
+        const response = await OrderApi.getIncomes();
+        setIncomes(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getIncomes();
+  }, []);
+
+  useEffect(() => {
+    if (!incomes.length) return;
+    setRate(parseFloat(((incomes[1].totalIncome / incomes[0].totalIncome - 1) * 100).toFixed(1)));
+  }, [incomes]);
+
+  const data = [
+    {
+      title: "Revenue",
+      amount: incomes.length > 0 ? `$${incomes[1].totalIncome}` : "$0",
+      rate: rate,
+    },
+    { title: "Sales", amount: "$4,415", rate: -1.4 },
+    { title: "Cost", amount: "$2,225", rate: 2.4 },
+  ];
+
   return (
     <Container>
-      {data.map((item, index) => (
-        <Item key={index}>
+      {data.map((item, i) => (
+        <Item key={i}>
           <Title>{item.title}</Title>
           <MoneyContainer>
             <Money>{item.amount}</Money>
             <MoneyRate>
-              {item.rate}{" "}
+              {`${item.rate}%`}
               <Icon $negative={item.rate < 0}>
                 {item.rate < 0 ? <ArrowDownward /> : <ArrowUpward />}
               </Icon>
