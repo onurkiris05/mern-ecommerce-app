@@ -7,10 +7,12 @@ import * as UsersApi from "../api/users";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { formatDate } from "../utils";
 import { Button } from "../components/Button";
-import CustomModal from "../components/CustomModal";
+import CustomModal from "../components/Modals/CustomModal";
+import ConfirmModal from "../components/Modals/ConfirmModal";
 
 const Container = styled.div`
   flex: 1;
+  height: 100%;
 `;
 
 const TitleWrapper = styled.div`
@@ -38,7 +40,9 @@ const StyledLink = styled(Link)`
 
 function UserListPage() {
   const [users, setUsers] = useState<PublicUser[]>([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -52,11 +56,18 @@ function UserListPage() {
     fetchUsers();
   }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDeleteClick = (id: string) => {
+    setSelectedUserId(id);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedUserId) return;
     try {
-      await UsersApi.deleteUser(id);
-      setUsers(users.filter((user) => user._id !== id));
-      setShowModal(true);
+      await UsersApi.deleteUser(selectedUserId);
+      setUsers(users.filter((user) => user._id !== selectedUserId));
+      setShowConfirmModal(false);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -106,7 +117,7 @@ function UserListPage() {
                 <EditOutlined />
               </Button.Icon>
             </StyledLink>
-            <Button.Icon color="red" onClick={() => handleDelete(params.row._id)}>
+            <Button.Icon color="red" onClick={() => handleDeleteClick(params.row._id)}>
               <DeleteOutline />
             </Button.Icon>
           </ActionWrapper>
@@ -139,9 +150,22 @@ function UserListPage() {
           },
         }}
       />
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        yesText="Delete"
+        noText="Cancel"
+      />
+
+      {/* Success Modal */}
       <CustomModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
+        show={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
         variant="success"
         title="Success"
         message="User deleted successfully!"

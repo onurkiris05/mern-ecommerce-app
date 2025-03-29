@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { formatDate } from "../utils";
 import { Alert, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import CustomModal from "../components/CustomModal";
+import CustomModal from "../components/Modals/CustomModal";
 import { Button } from "../components/Button";
 import { Order } from "../models/order";
 import * as OrderApi from "../api/orders";

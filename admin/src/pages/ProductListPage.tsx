@@ -5,12 +5,15 @@ import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { Product } from "../models/product";
 import * as ProductApi from "../api/products";
+import * as CloudinaryApi from "../api/cloudinary";
 import { formatDate } from "../utils";
 import { Button } from "../components/Button";
-import CustomModal from "../components/CustomModal";
+import CustomModal from "../components/Modals/CustomModal";
+import ConfirmModal from "../components/Modals/ConfirmModal";
 
 const Container = styled.div`
   flex: 1;
+  height: 100%;
 `;
 
 const TitleWrapper = styled.div`
@@ -54,7 +57,10 @@ const Color = styled.div<{ color: string }>`
 
 function ProductListPage() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [selectedProductImageUrl, setSelectedProductImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -68,11 +74,22 @@ function ProductListPage() {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDeleteClick = (id: string, imgUrl: string) => {
+    setSelectedProductId(id);
+    setSelectedProductImageUrl(imgUrl);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedProductId) return;
+    if (!selectedProductImageUrl) return;
+
     try {
-      await ProductApi.deleteProduct(id);
-      setProducts(products.filter((product) => product._id !== id));
-      setShowModal(true);
+      await ProductApi.deleteProduct(selectedProductId);
+      await CloudinaryApi.deleteImage(selectedProductImageUrl);
+      setProducts(products.filter((product) => product._id !== selectedProductId));
+      setShowConfirmModal(false);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error deleting product:", error);
     }
@@ -168,7 +185,10 @@ function ProductListPage() {
                 <EditOutlined />
               </Button.Icon>
             </Link>
-            <Button.Icon color="red" onClick={() => handleDelete(params.row._id)}>
+            <Button.Icon
+              color="red"
+              onClick={() => handleDeleteClick(params.row._id, params.row.img)}
+            >
               <DeleteOutline />
             </Button.Icon>
           </ActionWrapper>
@@ -201,9 +221,22 @@ function ProductListPage() {
           },
         }}
       />
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this product? This action cannot be undone."
+        yesText="Delete"
+        noText="Cancel"
+      />
+
+      {/* Success Modal */}
       <CustomModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
+        show={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
         variant="success"
         title="Success"
         message="Product deleted successfully!"

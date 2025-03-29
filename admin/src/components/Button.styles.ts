@@ -30,21 +30,22 @@ export const Primary = styled.button<{ size?: string; padding?: string }>`
   }
 `;
 
-export const Secondary = styled.button<{ size?: string; padding?: string }>`
+export const Secondary = styled.button<{ size?: string; color?: string; padding?: string }>`
   ${baseButtonStyles}
 
   color: #fff;
-  background: var(--clr-2);
+  background: ${({ color }) => color || "royalblue"};
+  box-shadow: 0 0.5rem 0.5rem rgba(0, 0, 0, 0.4);
 
   &:hover {
-    background-color: var(--clr-3);
+    box-shadow: inset 0 1rem 2rem rgba(0, 0, 0, 0.4);
   }
 `;
 
 export const Icon = styled.button<{ size?: string; color?: string; padding?: string }>`
   ${baseButtonStyles}
 
-  color: ${({ color }) => color || "var(--clr-1)"};
+  color: ${({ color }) => color || "royalblue"};
   background-color: white;
   border-radius: 50px;
   display: flex;

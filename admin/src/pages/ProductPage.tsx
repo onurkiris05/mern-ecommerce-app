@@ -10,8 +10,10 @@ import { useForm, useWatch } from "react-hook-form";
 import { Alert, Form } from "react-bootstrap";
 import { UnauthorizedError } from "../errors/http_errors";
 import * as ConstantsApi from "../api/constants";
-import CustomModal from "../components/CustomModal";
+import CustomModal from "../components/Modals/CustomModal";
 import { Button } from "../components/Button";
+import ConfirmModal from "../components/Modals/ConfirmModal";
+import LoadIndicator from "../components/LoadIndicator";
 
 const Container = styled.div`
   flex: 1;
@@ -82,8 +84,9 @@ const InfoValue = styled.div`
 `;
 
 const BottomContainer = styled.div`
+  width: min(95%, 50rem);
+  margin: 1.25rem auto;
   padding: 1.25rem;
-  margin: 1.25rem;
   -webkit-box-shadow: 0px 0px 1rem -0.5rem rgba(0, 0, 0, 0.75);
   box-shadow: 0px 0px 1rem -0.5rem rgba(0, 0, 0, 0.75);
 `;
@@ -100,6 +103,13 @@ const Color = styled.div<{ color: string }>`
 const EditTitle = styled.h2`
   font-weight: 600;
   margin-bottom: 1rem;
+`;
+
+const ButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 function ProductPage() {
@@ -134,14 +144,17 @@ function ProductPage() {
   });
   const [errorText, setErrorText] = useState<string | null>(null);
   const [newColor, setNewColor] = useState<string | undefined>();
-  const [showModal, setShowModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const colors = useWatch({ name: "colors", control });
 
   async function onSubmit(input: ProductApi.ProductInput) {
+    setIsLoading(true);
     try {
       const repsonse = await ProductApi.updateProduct(productId!, input);
       setProduct(repsonse);
-      setShowModal(true);
+      setShowSuccessModal(true);
     } catch (error) {
       if (error instanceof UnauthorizedError) {
         setErrorText(error.message);
@@ -149,7 +162,14 @@ function ProductPage() {
         alert(error);
       }
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
+  }
+
+  function handleConfirmUpdate() {
+    setShowConfirmModal(false);
+    handleSubmit(onSubmit)();
   }
 
   useEffect(() => {
@@ -210,169 +230,206 @@ function ProductPage() {
 
   return (
     <Container>
-      <Title>Product</Title>
-      <TopContainer>
-        <TopLeft>
-          <ImgContainer>
-            <Img src={product?.img} alt={product?.title} />
-          </ImgContainer>
-          <InfoContainer>
-            <Name>{product?.title}</Name>
-            <InfoContent>
-              <Info>
-                <InfoTitle>ID:</InfoTitle>
-                <InfoValue>{product?._id}</InfoValue>
-              </Info>
-              <Info>
-                <InfoTitle>Desc:</InfoTitle>
-                <InfoValue>{product?.desc}</InfoValue>
-              </Info>
-              <Info>
-                <InfoTitle>Categories:</InfoTitle>
-                <InfoValue>{product?.categories?.join(", ")}</InfoValue>
-              </Info>
-              <Info>
-                <InfoTitle>Genders:</InfoTitle>
-                <InfoValue>{product?.genders?.join(", ")}</InfoValue>
-              </Info>
-              <Info>
-                <InfoTitle>Sizes:</InfoTitle>
-                <InfoValue>{product?.sizes?.join(", ")}</InfoValue>
-              </Info>
-              <Info>
-                <InfoTitle>Colors:</InfoTitle>
-                <InfoValue>
-                  {product?.colors?.map((color: string, i: number) => (
-                    <Color key={i} color={color} />
+      {isLoading ? (
+        <LoadIndicator message="Updating Product..." />
+      ) : (
+        <>
+          <Title>Product</Title>
+          <TopContainer>
+            <TopLeft>
+              <ImgContainer>
+                <Img src={product?.img} alt={product?.title} />
+              </ImgContainer>
+              <InfoContainer>
+                <Name>{product?.title}</Name>
+                <InfoContent>
+                  <Info>
+                    <InfoTitle>ID:</InfoTitle>
+                    <InfoValue>{product?._id}</InfoValue>
+                  </Info>
+                  <Info>
+                    <InfoTitle>Desc:</InfoTitle>
+                    <InfoValue>{product?.desc}</InfoValue>
+                  </Info>
+                  <Info>
+                    <InfoTitle>Categories:</InfoTitle>
+                    <InfoValue>{product?.categories?.join(", ")}</InfoValue>
+                  </Info>
+                  <Info>
+                    <InfoTitle>Genders:</InfoTitle>
+                    <InfoValue>{product?.genders?.join(", ")}</InfoValue>
+                  </Info>
+                  <Info>
+                    <InfoTitle>Sizes:</InfoTitle>
+                    <InfoValue>{product?.sizes?.join(", ")}</InfoValue>
+                  </Info>
+                  <Info>
+                    <InfoTitle>Colors:</InfoTitle>
+                    <InfoValue>
+                      {product?.colors?.map((color: string, i: number) => (
+                        <Color key={i} color={color} />
+                      ))}
+                    </InfoValue>
+                  </Info>
+                  <Info>
+                    <InfoTitle>Price:</InfoTitle>
+                    <InfoValue>{`$${product?.price}`}</InfoValue>
+                  </Info>
+                  <Info>
+                    <InfoTitle>Stock:</InfoTitle>
+                    <InfoValue>{product?.stock}</InfoValue>
+                  </Info>
+                  <Info>
+                    <InfoTitle>CreatedAt:</InfoTitle>
+                    <InfoValue>{formatDate(product?.createdAt!)}</InfoValue>
+                  </Info>
+                  <Info>
+                    <InfoTitle>UpdatedAt:</InfoTitle>
+                    <InfoValue>{formatDate(product?.updatedAt!)}</InfoValue>
+                  </Info>
+                </InfoContent>
+              </InfoContainer>
+            </TopLeft>
+            <TopRight>
+              <Chart data={productData} dataKey="Sales" title="Sales Performance" />
+            </TopRight>
+          </TopContainer>
+          <BottomContainer>
+            <EditTitle>Edit</EditTitle>
+            <Form className="d-flex flex-column">
+              {errorText && <Alert variant="danger">{errorText}</Alert>}
+              <Form.Group className="mb-4">
+                <Form.Label className="me-4">Title: </Form.Label>
+                <Form.Control type="text" placeholder="Title" {...register("title")} />
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label className="me-4">Description: </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  placeholder="Description"
+                  {...register("desc")}
+                />
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label className="me-4">Img URL: </Form.Label>
+                <Form.Control type="text" placeholder="Image" {...register("img")} />
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label className="me-4">Categories: </Form.Label>
+                {constants.categoryOptions.map((item: ConstantsApi.OptionProps, i: number) => (
+                  <Form.Check
+                    key={i}
+                    inline
+                    type="checkbox"
+                    label={item.label}
+                    value={item.value}
+                    {...register("categories")}
+                  />
+                ))}
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label className="me-4">Genders: </Form.Label>
+                {constants.genderOptions.map((item: ConstantsApi.OptionProps, i: number) => (
+                  <Form.Check
+                    key={i}
+                    inline
+                    type="checkbox"
+                    label={item.label}
+                    value={item.value}
+                    {...register("genders")}
+                  />
+                ))}
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label className="me-4">Sizes: </Form.Label>
+                {constants.sizeOptions.map((item: ConstantsApi.OptionProps, i: number) => (
+                  <Form.Check
+                    key={i}
+                    inline
+                    type="checkbox"
+                    label={item.label}
+                    value={item.value}
+                    {...register("sizes")}
+                  />
+                ))}
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label className="me-4">Colors: </Form.Label>
+                <div className="d-flex flex-wrap gap-4">
+                  {colors?.map((color: string, i: number) => (
+                    <div key={i} className="d-flex align-items-center">
+                      <Color color={color} />
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-danger ms-1"
+                        onClick={() => handleRemoveColor(color)}
+                      >
+                        X
+                      </button>
+                    </div>
                   ))}
-                </InfoValue>
-              </Info>
-              <Info>
-                <InfoTitle>Price:</InfoTitle>
-                <InfoValue>{`$${product?.price}`}</InfoValue>
-              </Info>
-              <Info>
-                <InfoTitle>Stock:</InfoTitle>
-                <InfoValue>{product?.stock}</InfoValue>
-              </Info>
-              <Info>
-                <InfoTitle>CreatedAt:</InfoTitle>
-                <InfoValue>{formatDate(product?.createdAt!)}</InfoValue>
-              </Info>
-              <Info>
-                <InfoTitle>UpdatedAt:</InfoTitle>
-                <InfoValue>{formatDate(product?.updatedAt!)}</InfoValue>
-              </Info>
-            </InfoContent>
-          </InfoContainer>
-        </TopLeft>
-        <TopRight>
-          <Chart data={productData} dataKey="Sales" title="Sales Performance" />
-        </TopRight>
-      </TopContainer>
-      <BottomContainer>
-        <EditTitle>Edit</EditTitle>
-        <Form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
-          {errorText && <Alert variant="danger">{errorText}</Alert>}
-          <Form.Group className="mb-4">
-            <Form.Label className="me-4">Title: </Form.Label>
-            <Form.Control type="text" placeholder="Title" {...register("title")} />
-          </Form.Group>
-          <Form.Group className="mb-4">
-            <Form.Label className="me-4">Description: </Form.Label>
-            <Form.Control as="textarea" rows={3} placeholder="Description" {...register("desc")} />
-          </Form.Group>
-          <Form.Group className="mb-4">
-            <Form.Label className="me-4">Img URL: </Form.Label>
-            <Form.Control type="text" placeholder="Image" {...register("img")} />
-          </Form.Group>
-          <Form.Group className="mb-4">
-            <Form.Label className="me-4">Categories: </Form.Label>
-            {constants.categoryOptions.map((item: ConstantsApi.OptionProps, i: number) => (
-              <Form.Check
-                key={i}
-                inline
-                type="checkbox"
-                label={item.label}
-                value={item.value}
-                {...register("categories")}
-              />
-            ))}
-          </Form.Group>
-          <Form.Group className="mb-4">
-            <Form.Label className="me-4">Genders: </Form.Label>
-            {constants.genderOptions.map((item: ConstantsApi.OptionProps, i: number) => (
-              <Form.Check
-                key={i}
-                inline
-                type="checkbox"
-                label={item.label}
-                value={item.value}
-                {...register("genders")}
-              />
-            ))}
-          </Form.Group>
-          <Form.Group className="mb-4">
-            <Form.Label className="me-4">Sizes: </Form.Label>
-            {constants.sizeOptions.map((item: ConstantsApi.OptionProps, i: number) => (
-              <Form.Check
-                key={i}
-                inline
-                type="checkbox"
-                label={item.label}
-                value={item.value}
-                {...register("sizes")}
-              />
-            ))}
-          </Form.Group>
-          <Form.Group className="mb-4">
-            <Form.Label className="me-4">Colors: </Form.Label>
-            <div className="d-flex flex-wrap gap-4">
-              {colors?.map((color: string, i: number) => (
-                <div key={i} className="d-flex align-items-center">
-                  <Color color={color} />
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-danger ms-1"
-                    onClick={() => handleRemoveColor(color)}
-                  >
-                    X
-                  </button>
                 </div>
-              ))}
-            </div>
-          </Form.Group>
-          <Form.Group className="mb-4">
-            <Form.Label className="me-4">Add New Color: </Form.Label>
-            <div className="d-flex align-items-center gap-2">
-              <Form.Control
-                type="color"
-                value={newColor || "#333"}
-                onChange={(e) => setNewColor(e.target.value)}
-                style={{ width: "100px" }}
-              />
-              <Button.Secondary size="1rem" type="button" onClick={handleAddColor}>
-                Add
-              </Button.Secondary>
-            </div>
-          </Form.Group>
-          <Form.Group className="mb-4">
-            <Form.Label className="me-4">Price: </Form.Label>
-            <Form.Control type="number" step="0.01" placeholder="Price" {...register("price")} />
-          </Form.Group>
-          <Form.Group className="mb-4">
-            <Form.Label className="me-4">Stock: </Form.Label>
-            <Form.Control type="number" placeholder="Stock" {...register("stock")} />
-          </Form.Group>
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label className="me-4">Add New Color: </Form.Label>
+                <div className="d-flex align-items-center gap-2">
+                  <Form.Control
+                    type="color"
+                    value={newColor || "#333"}
+                    onChange={(e) => setNewColor(e.target.value)}
+                    style={{ width: "100px" }}
+                  />
+                  <Button.Secondary size="1rem" type="button" onClick={handleAddColor}>
+                    Add
+                  </Button.Secondary>
+                </div>
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label className="me-4">Price: </Form.Label>
+                <Form.Control
+                  type="number"
+                  step="0.01"
+                  placeholder="Price"
+                  {...register("price")}
+                />
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label className="me-4">Stock: </Form.Label>
+                <Form.Control type="number" placeholder="Stock" {...register("stock")} />
+              </Form.Group>
+              <ButtonWrapper>
+                <Button.Primary
+                  size="1.5rem"
+                  type="button"
+                  onClick={() => setShowConfirmModal(true)}
+                  disabled={isSubmitting}
+                >
+                  Update
+                </Button.Primary>
+              </ButtonWrapper>
+            </Form>
+          </BottomContainer>
+        </>
+      )}
 
-          <Button.Primary size="1.5rem" type="submit" disabled={isSubmitting}>
-            Update
-          </Button.Primary>
-        </Form>
-      </BottomContainer>
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this product?"
+        yesText="Update"
+        noText="Cancel"
+        yesColor="royalblue"
+        noColor="lightgray"
+      />
+
+      {/* Success Modal */}
       <CustomModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
+        show={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
         variant="success"
         title="Success"
         message="Product updated successfully!"

@@ -5,11 +5,13 @@ import { DeleteOutline, EditOutlined, Search } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { formatDate } from "../utils";
 import { Button } from "../components/Button";
-import CustomModal from "../components/CustomModal";
+import CustomModal from "../components/Modals/CustomModal";
 import * as OrderApi from "../api/orders";
 import { Order } from "../models/order";
+import ConfirmModal from "../components/Modals/ConfirmModal";
 
 const Container = styled.div`
+  flex: 1;
   height: 100%;
 `;
 
@@ -35,7 +37,9 @@ const ButtonWrapper = styled.div`
 
 function OrderListPage() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -49,11 +53,18 @@ function OrderListPage() {
     fetchOrders();
   }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDeleteClick = (id: string) => {
+    setSelectedOrderId(id);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedOrderId) return;
     try {
-      await OrderApi.deleteOrder(id);
-      setOrders(orders.filter((order) => order._id !== id));
-      setShowModal(true);
+      await OrderApi.deleteOrder(selectedOrderId);
+      setOrders(orders.filter((order) => order._id !== selectedOrderId));
+      setShowConfirmModal(false);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error deleting order:", error);
     }
@@ -142,7 +153,7 @@ function OrderListPage() {
                 <EditOutlined />
               </Button.Icon>
             </Link>
-            <Button.Icon color="red" onClick={() => handleDelete(params.row._id)}>
+            <Button.Icon color="red" onClick={() => handleDeleteClick(params.row._id)}>
               <DeleteOutline />
             </Button.Icon>
           </ActionWrapper>
@@ -170,9 +181,22 @@ function OrderListPage() {
           },
         }}
       />
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this order? This action cannot be undone."
+        yesText="Delete"
+        noText="Cancel"
+      />
+
+      {/* Success Modal */}
       <CustomModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
+        show={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
         variant="success"
         title="Success"
         message="Order deleted successfully!"

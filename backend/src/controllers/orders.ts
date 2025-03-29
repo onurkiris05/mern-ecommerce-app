@@ -3,16 +3,17 @@ import Order from "../models/order";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
 
-export const getPrevMonthIncome: RequestHandler = async (req, res, next) => {
+export const getLatestIncomes: RequestHandler = async (req, res, next) => {
   try {
     const date = new Date();
-    const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
-    const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
+    const twoMonthsAgo = new Date(date);
+    twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
 
+    // This will return last 2 months incomes
     const income = await Order.aggregate([
       {
         $match: {
-          createdAt: { $gte: previousMonth },
+          createdAt: { $gte: twoMonthsAgo },
         },
       },
       {

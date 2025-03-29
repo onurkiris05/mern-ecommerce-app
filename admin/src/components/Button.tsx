@@ -18,8 +18,8 @@ export const Button = {
       {children}
     </StyledButton.Primary>
   ),
-  Secondary: ({ children, size, padding, ...props }: ButtonProps) => (
-    <StyledButton.Secondary size={size} padding={padding} {...props}>
+  Secondary: ({ children, size, color, padding, ...props }: ButtonProps) => (
+    <StyledButton.Secondary size={size} padding={padding} color={color} {...props}>
       {children}
     </StyledButton.Secondary>
   ),

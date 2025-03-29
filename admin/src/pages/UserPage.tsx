@@ -15,8 +15,10 @@ import { formatDate } from "../utils";
 import { Alert, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { UnauthorizedError } from "../errors/http_errors";
-import CustomModal from "../components/CustomModal";
+import CustomModal from "../components/Modals/CustomModal";
 import { Button } from "../components/Button";
+import ConfirmModal from "../components/Modals/ConfirmModal";
+import LoadIndicator from "../components/LoadIndicator";
 
 const Container = styled.div`
   flex: 1;
@@ -82,7 +84,10 @@ const ButtonWrapper = styled.div`
 function UserPage() {
   const { userId } = useParams();
   const [user, setUser] = useState<PublicUser>();
-  const [showModal, setShowModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -98,10 +103,12 @@ function UserPage() {
   const [errorText, setErrorText] = useState<string | null>(null);
 
   async function onSubmit(input: UserApi.UserInput) {
+    setIsLoading(true);
+
     try {
       const userResponse = await UserApi.updateUser(userId!, input);
       setUser(userResponse);
-      setShowModal(true);
+      setShowSuccessModal(true);
     } catch (error) {
       if (error instanceof UnauthorizedError) {
         setErrorText(error.message);
@@ -109,7 +116,14 @@ function UserPage() {
         alert(error);
       }
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
+  }
+
+  function handleConfirmUpdate() {
+    setShowConfirmModal(false);
+    handleSubmit(onSubmit)();
   }
 
   useEffect(() => {
@@ -136,68 +150,93 @@ function UserPage() {
 
   return (
     <Container>
-      <Title>Edit User</Title>
-      <ContentContainer>
-        <Card>
-          <CardTitle>Account Details</CardTitle>
-          <CardInfo>
-            <CardInfoTitle>
-              <PermIdentity /> Username:
-            </CardInfoTitle>
-            <CardInfoDesc> {user?.username}</CardInfoDesc>
-          </CardInfo>
-          <CardInfo>
-            <CardInfoTitle>
-              <MailOutline /> Email:
-            </CardInfoTitle>
-            <CardInfoDesc> {user?.email}</CardInfoDesc>
-          </CardInfo>
-          <CardInfo>
-            <CardInfoTitle>
-              <ManageAccounts /> IsAdmin:
-            </CardInfoTitle>
-            <CardInfoDesc> {user?.isAdmin ? <CheckCircle /> : <Cancel />}</CardInfoDesc>
-          </CardInfo>
-          <CardInfo>
-            <CardInfoTitle>
-              <CalendarToday /> Created At:
-            </CardInfoTitle>
-            <CardInfoDesc> {user && formatDate(user.createdAt)}</CardInfoDesc>
-          </CardInfo>
-          <CardInfo>
-            <CardInfoTitle>
-              <CalendarToday /> Updated At:
-            </CardInfoTitle>
-            <CardInfoDesc> {user && formatDate(user.updatedAt)}</CardInfoDesc>
-          </CardInfo>
-        </Card>
-        <Update>
-          <UpdateTitle>Edit</UpdateTitle>
-          <Form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
-            {errorText && <Alert variant="danger">{errorText}</Alert>}
-            <Form.Group className="mb-4">
-              <Form.Label className="me-4">Username: </Form.Label>
-              <Form.Control type="text" placeholder="Username" {...register("username")} />
-            </Form.Group>
-            <Form.Group className="mb-4">
-              <Form.Label className="me-4">Email: </Form.Label>
-              <Form.Control type="email" placeholder="Email" {...register("email")} />
-            </Form.Group>
-            <Form.Group className="mb-4">
-              <Form.Label className="me-4">Password: </Form.Label>
-              <Form.Control type="password" placeholder="Password" {...register("password")} />
-            </Form.Group>
-            <ButtonWrapper>
-              <Button.Primary size="1rem" type="submit" disabled={isSubmitting}>
-                Update
-              </Button.Primary>
-            </ButtonWrapper>
-          </Form>
-        </Update>
-      </ContentContainer>
+      {isLoading ? (
+        <LoadIndicator message="Updating User..." />
+      ) : (
+        <>
+          <Title>Edit User</Title>
+          <ContentContainer>
+            <Card>
+              <CardTitle>Account Details</CardTitle>
+              <CardInfo>
+                <CardInfoTitle>
+                  <PermIdentity /> Username:
+                </CardInfoTitle>
+                <CardInfoDesc> {user?.username}</CardInfoDesc>
+              </CardInfo>
+              <CardInfo>
+                <CardInfoTitle>
+                  <MailOutline /> Email:
+                </CardInfoTitle>
+                <CardInfoDesc> {user?.email}</CardInfoDesc>
+              </CardInfo>
+              <CardInfo>
+                <CardInfoTitle>
+                  <ManageAccounts /> IsAdmin:
+                </CardInfoTitle>
+                <CardInfoDesc> {user?.isAdmin ? <CheckCircle /> : <Cancel />}</CardInfoDesc>
+              </CardInfo>
+              <CardInfo>
+                <CardInfoTitle>
+                  <CalendarToday /> Created At:
+                </CardInfoTitle>
+                <CardInfoDesc> {user && formatDate(user.createdAt)}</CardInfoDesc>
+              </CardInfo>
+              <CardInfo>
+                <CardInfoTitle>
+                  <CalendarToday /> Updated At:
+                </CardInfoTitle>
+                <CardInfoDesc> {user && formatDate(user.updatedAt)}</CardInfoDesc>
+              </CardInfo>
+            </Card>
+            <Update>
+              <UpdateTitle>Edit</UpdateTitle>
+              <Form className="d-flex flex-column">
+                {errorText && <Alert variant="danger">{errorText}</Alert>}
+                <Form.Group className="mb-4">
+                  <Form.Label className="me-4">Username: </Form.Label>
+                  <Form.Control type="text" placeholder="Username" {...register("username")} />
+                </Form.Group>
+                <Form.Group className="mb-4">
+                  <Form.Label className="me-4">Email: </Form.Label>
+                  <Form.Control type="email" placeholder="Email" {...register("email")} />
+                </Form.Group>
+                <Form.Group className="mb-4">
+                  <Form.Label className="me-4">Password: </Form.Label>
+                  <Form.Control type="password" placeholder="Password" {...register("password")} />
+                </Form.Group>
+                <ButtonWrapper>
+                  <Button.Primary
+                    size="1rem"
+                    type="button"
+                    onClick={() => setShowConfirmModal(true)}
+                    disabled={isSubmitting}
+                  >
+                    Update
+                  </Button.Primary>
+                </ButtonWrapper>
+              </Form>
+            </Update>
+          </ContentContainer>
+        </>
+      )}
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this user?"
+        yesText="Update"
+        noText="Cancel"
+        yesColor="royalblue"
+        noColor="lightgray"
+      />
+
+      {/* Success Modal */}
       <CustomModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
+        show={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
         variant="success"
         title="Success"
         message="User updated successfully!"

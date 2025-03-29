@@ -18,7 +18,7 @@ router
 router.get(
   "/income",
   AuthsService.verifyTokenAndAdmin,
-  handleAsync(OrdersController.getPrevMonthIncome)
+  handleAsync(OrdersController.getLatestIncomes)
 );
 
 router.get(
