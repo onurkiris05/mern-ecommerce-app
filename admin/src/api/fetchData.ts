@@ -10,10 +10,13 @@ export async function fetchData(input: RequestInfo, init?: RequestInit) {
     ...init?.headers,
   };
 
-  const response = await fetch("http://localhost:5000" + input, {
-    ...init,
-    headers,
-  });
+  const response = await fetch(
+    (process.env.REACT_APP_BACKEND_URL || "http://localhost:5000") + input,
+    {
+      ...init,
+      headers,
+    }
+  );
 
   if (response.ok) return response;
 

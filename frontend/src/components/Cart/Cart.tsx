@@ -5,6 +5,7 @@ import CartProduct from "./CartProduct";
 import CartSummary from "./CartSummary";
 import { md } from "../../utils/responsive";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Body = styled.div`
   flex: 1;
@@ -38,12 +39,18 @@ const LinkWrapper = styled.div`
   margin-right: 4rem;
 `;
 
-const Link = styled.a`
+const BasicLink = styled.a`
   cursor: pointer;
   color: var(--clr-1);
 `;
 
 const Span = styled.span``;
+
+const StyledLink = styled(Link)`
+  all: unset;
+  display: flex;
+  cursor: pointer;
+`;
 
 function Cart() {
   const { products, quantity, total } = useSelector((state: any) => state.cart);
@@ -52,16 +59,18 @@ function Cart() {
     <Body className="pt-5 px-1 px-sm-4">
       <Title>Your Bag</Title>
       <NavWrapper>
-        <Button.Secondary size="1rem" style={{ background: "var(--clr-1)" }}>
-          CONTINUE SHOPPING
-        </Button.Secondary>
+        <StyledLink to="/">
+          <Button.Secondary size="1rem" style={{ background: "var(--clr-1)" }}>
+            CONTINUE SHOPPING
+          </Button.Secondary>
+        </StyledLink>
         <LinkWrapper className="d-none d-sm-flex">
-          <Link>
+          <BasicLink>
             Shopping Bag (<Span>{quantity}</Span>)
-          </Link>
-          <Link>
+          </BasicLink>
+          <BasicLink>
             Your Wishlist (<Span>0</Span>)
-          </Link>
+          </BasicLink>
         </LinkWrapper>
       </NavWrapper>
       <Container fluid className="pt-4">

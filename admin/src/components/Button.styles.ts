@@ -38,7 +38,7 @@ export const Secondary = styled.button<{ size?: string; color?: string; padding?
   box-shadow: 0 0.5rem 0.5rem rgba(0, 0, 0, 0.4);
 
   &:hover {
-    box-shadow: inset 0 1rem 2rem rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0.75rem 0.75rem rgba(0, 0, 0, 0.5);
   }
 `;
 
@@ -61,7 +61,7 @@ export const Icon = styled.button<{ size?: string; color?: string; padding?: str
   }
 
   &:hover {
-    box-shadow: inset 0 1rem 2rem rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
   }
 `;
 
