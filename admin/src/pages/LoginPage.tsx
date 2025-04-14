@@ -10,6 +10,7 @@ import { Alert } from "react-bootstrap";
 import { login } from "../redux/userRedux";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
+import CustomModal from "../components/Modals/CustomModal";
 
 const Body = styled.div`
   width: 100vw;
@@ -50,6 +51,7 @@ function LoginPage() {
   } = useForm<UserLoginInput>();
   const dispatch = useDispatch();
   const [errorText, setErrorText] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(true);
   const navigate = useNavigate();
 
   async function onSubmit(input: UserLoginInput) {
@@ -73,6 +75,12 @@ function LoginPage() {
 
   return (
     <Body>
+      <CustomModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        title="Test Account"
+        message="Username: Admin / Password: 1234"
+      />
       <Background src="/assets/login-bg.jpg" />
       <Window>
         <Title>ADMIN LOGIN</Title>
